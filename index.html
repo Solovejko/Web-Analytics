@@ -36,52 +36,54 @@
                 <div class="statistic">
                     <h1>Статистика взаимодействия с РЭМД</h1>
 
-                    <canvas id="statisticChart" width="500" height="500"></canvas>
+                    <div class="statisticCharLegent">
+                        <canvas id="statisticChart" width="500" height="500"></canvas>
 
-                    <div class="legend">
-                        <div class="legend-item s0">
-                            <div class="legend-color"></div>                          
-                            <span>0 - Ожидает выгрузки</span>
-                            <div class="row" style="--p:0; --c:#969696">
-                                <div class="bar">0 (0%)</div>
-                            </div>                
+                        <div class="legend">
+                            <div class="legend-item s0">
+                                <div class="legend-color"></div>                          
+                                <span>0 - Ожидает выгрузки</span>
+                                <div class="row" style="--p:0; --c:#969696">
+                                    <div class="bar">0 (0%)</div>
+                                </div>                
+                            </div>
+                            <div class="legend-item s1">
+                                <div class="legend-color"></div>                          
+                                <span>1 - Отправлено в ЕГИСЗ</span>
+                                <div class="row" style="--p:0; --c:#00ABD3">
+                                    <div class="bar">0 (0%)</div>
+                                </div>                 
+                            </div>
+                            <div class="legend-item s2">
+                                <div class="legend-color"></div>                          
+                                <span>2 - Ошибка формирования</span>
+                                <div class="row" style="--p:0; --c:#F47521">
+                                    <div class="bar">0 (0%)</div>
+                                </div>                 
+                            </div>
+                            <div class="legend-item s3">
+                                <div class="legend-color"></div>                          
+                                <span>3 - Ошибка первичной валидации</span>
+                                <div class="row" style="--p:0; --c:#338AA9">
+                                    <div class="bar">0 (0%)</div>
+                                </div>                
+                            </div>
+                            <div class="legend-item s4">
+                                <div class="legend-color"></div>                          
+                                <span>4 - Документ принят успешно</span>
+                                <div class="row" style="--p:0; --c:#00A78E">
+                                    <div class="bar">0 (0%)</div>
+                                </div>                 
+                            </div>
+                            <div class="legend-item s5">
+                                <div class="legend-color"></div>                          
+                                <span>5 - Документ отклонен ЕГИСЗ</span>
+                                <div class="row" style="--p:0; --c:#976A65">
+                                    <div class="bar">0 (0%)</div>
+                                </div>                 
+                            </div>
                         </div>
-                        <div class="legend-item s1">
-                            <div class="legend-color"></div>                          
-                            <span>1 - Отправлено в ЕГИСЗ</span>
-                            <div class="row" style="--p:0; --c:#00ABD3">
-                                <div class="bar">0 (0%)</div>
-                            </div>                 
-                        </div>
-                        <div class="legend-item s2">
-                            <div class="legend-color"></div>                          
-                            <span>2 - Ошибка формирования</span>
-                            <div class="row" style="--p:0; --c:#F47521">
-                                <div class="bar">0 (0%)</div>
-                            </div>                 
-                        </div>
-                        <div class="legend-item s3">
-                            <div class="legend-color"></div>                          
-                            <span>3 - Ошибка первичной валидации</span>
-                            <div class="row" style="--p:0; --c:#338AA9">
-                                <div class="bar">0 (0%)</div>
-                            </div>                
-                        </div>
-                        <div class="legend-item s4">
-                            <div class="legend-color"></div>                          
-                            <span>4 - Документ принят успешно</span>
-                            <div class="row" style="--p:0; --c:#00A78E">
-                                <div class="bar">0 (0%)</div>
-                            </div>                 
-                        </div>
-                        <div class="legend-item s5">
-                            <div class="legend-color"></div>                          
-                            <span>5 - Документ отклонен ЕГИСЗ</span>
-                            <div class="row" style="--p:0; --c:#976A65">
-                                <div class="bar">0 (0%)</div>
-                            </div>                 
-                        </div>
-                    </div>
+                    </div>           
                 </div>
             </div>         
             
