@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>ITworks Аналитика</title>
+        <link rel="stylesheet" href="css/style.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Rubik">
+        <link rel="shortcut icon" href="images/logo.png" type="images/logo.png">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <div class="sideNav">
+            <button class="sideNavButton" id="main">Главная</button>
+            <button class="sideNavButton" id="kash">Кащенко</button>
+            <button class="sideNavButton" id="sideNavButton3">...</button>
+            <button class="sideNavButton" id="sideNavButton4">...</button>
+        </div>
+
+        <main>
+
+            <div class="typeData">
+                <button class="subButton" id="lightStatictic">Основная статистика</button>
+                <button class="subButton" id="extendedStatictic">Статистика ошибок</button>        
+            </div>
+
+            <div class="dateTime">
+                <button class="subButton" id="today">Сегодня</button>
+                <button class="subButton" id="yesterday">Вчера</button>
+                <button class="subButton" id="week">Неделя</button>
+                <button class="subButton" id="month">Месяц</button>
+                <button class="subButton" id="anotherDate">Другая дата</button>    
+            </div>
+
+            <div class="lightStaticticСontent">
+       
+                <div class="statistic">
+                    <h1>Статистика взаимодействия с РЭМД</h1>
+
+                    <canvas id="statisticChart" width="500" height="500"></canvas>
+
+                    <div class="legend">
+                        <div class="legend-item s0">
+                            <div class="legend-color"></div>                          
+                            <span>0 - Ожидает выгрузки</span>
+                            <div class="row" style="--p:0; --c:#969696">
+                                <div class="bar">0 (0%)</div>
+                            </div>                
+                        </div>
+                        <div class="legend-item s1">
+                            <div class="legend-color"></div>                          
+                            <span>1 - Отправлено в ЕГИСЗ</span>
+                            <div class="row" style="--p:0; --c:#00ABD3">
+                                <div class="bar">0 (0%)</div>
+                            </div>                 
+                        </div>
+                        <div class="legend-item s2">
+                            <div class="legend-color"></div>                          
+                            <span>2 - Ошибка формирования</span>
+                            <div class="row" style="--p:0; --c:#F47521">
+                                <div class="bar">0 (0%)</div>
+                            </div>                 
+                        </div>
+                        <div class="legend-item s3">
+                            <div class="legend-color"></div>                          
+                            <span>3 - Ошибка первичной валидации</span>
+                            <div class="row" style="--p:0; --c:#338AA9">
+                                <div class="bar">0 (0%)</div>
+                            </div>                
+                        </div>
+                        <div class="legend-item s4">
+                            <div class="legend-color"></div>                          
+                            <span>4 - Документ принят успешно</span>
+                            <div class="row" style="--p:0; --c:#00A78E">
+                                <div class="bar">0 (0%)</div>
+                            </div>                 
+                        </div>
+                        <div class="legend-item s5">
+                            <div class="legend-color"></div>                          
+                            <span>5 - Документ отклонен ЕГИСЗ</span>
+                            <div class="row" style="--p:0; --c:#976A65">
+                                <div class="bar">0 (0%)</div>
+                            </div>                 
+                        </div>
+                    </div>
+                </div>
+            </div>         
+            
+            <div class="extendedStaticticContent" style="display: none;">
+                <div class="extendedStaticticType">
+                    <button class="subButton" id="emdErrors">ЭМД</button>
+                    <button class="subButton" id="statisticErrors">Анализ ошибок</button>  
+                </div>
+                <div class="emdErrorsContent" style="display: none;">
+                    <table class="dataKash">
+                        <thead>
+                            <tr>
+                                <th>Вид мед. документа</th>
+                                <th>Всего отправок</th>
+                                <th>Отправок с ошибкой</th>
+                                <th>2</th>
+                                <th>3</th>
+                                <th>5</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="statisticErrorsContent" style="display: none;">
+                    <table class="dataKashErrors">
+                        <thead>
+                            <tr>
+                                <th>Ошибка</th>
+                                <th>Количество</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>            
+            </div>
+        </main>
+
+        <script src="js/script.js"></script>
+
+        <footer>
+
+        </footer>
+    </body>
+</html>

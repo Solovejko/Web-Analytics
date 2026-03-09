@@ -1,0 +1,200 @@
+html {
+    overflow: scroll;
+}
+
+body {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    background-color: white;
+    /*border: 1px solid black;  DELETE */
+}
+
+/*
+div {
+    border: 1px solid red;  
+}
+    */
+
+button {
+    border: 1px solid darkgrey;   
+}
+
+main {
+    display: grid;
+    grid-template-rows: 70px 50px 1fr;
+    padding-left: 50px;
+    padding-right: 50px;
+    row-gap: 10px;   
+}
+
+h1 {
+    font-weight: normal;
+    text-align: center;
+}
+
+.lightStaticticСontent {
+    display: grid;
+    margin: 10px;
+    grid-template-rows: 1fr;
+}
+
+.extendedStaticticContent{
+    display: grid;
+    margin: 10px;
+    grid-template-rows: 40px 1fr;    
+}
+
+.dateTime {
+    display: grid;
+    justify-content: center;
+    column-gap: 5px;
+    margin-left: 10px;
+    margin-right: 10px;
+    grid-template-columns: repeat(5, 100px);
+}
+
+.dateTime button {
+    display: grid;
+    text-align: center;
+    border-radius: 10px;
+    justify-items : center;
+    align-items: center;
+    font-size: 15px;
+}
+
+.sideNav {
+    display: grid;
+    grid-template-rows: 55px 55px 55px 55px;
+    row-gap: 10px;
+    align-items: start;
+}
+
+.sideNav .sideNavButton {
+    text-align: center;
+    display: grid;
+    background-color: #C9D2D7;
+    color: black;
+    font-size: 20px; 
+    padding: 15px 15px;
+    border-radius: 25px; 
+    box-shadow: 0 0 5px rgba(0,0,0,0.3);   
+}
+
+.extendedStaticticType {
+    display: grid;
+    justify-content: start;
+    column-gap: 5px;
+    margin-left: 10px;
+    margin-right: 10px;
+    grid-template-columns: repeat(5, 200px);
+}
+
+.extendedStaticticType button {
+    display: grid;
+    text-align: center;
+    border-radius: 10px;
+    justify-items : center;
+    align-items: center;
+    font-size: 15px;
+}
+
+.selectedMain {
+    background-color: #667D8A !important;   
+}
+
+.selectedSecond {
+    background-color: #97aebb !important;   
+}
+
+.sideNavButton:hover {
+    background-color: #A7B6BE;
+}
+
+.sideNavButton:active {
+    background-color: #667D8A;
+}
+
+.subButton:hover{
+    background-color: #c1d0da;
+}
+
+.subButton:active{
+    background-color: #97aebb;
+}
+
+.statistic{
+    display: grid;
+}
+
+#statisticChart{
+    display: grid;
+    justify-self : center;
+}
+
+.legend {
+    display: grid;
+    grid-template-rows: repeat(6, 1fr);
+}
+
+.legend-item {
+   display: grid;
+   grid-template-columns: 20px 1fr 1fr;
+   column-gap: 10px; 
+}
+
+.legend-color {
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+}
+
+.s0 .legend-color { background: #969696; }
+.s1 .legend-color { background: #00ABD3; }
+.s2 .legend-color { background: #F47521; }
+.s3 .legend-color { background: #338AA9; }
+.s4 .legend-color { background: #00A78E; }
+.s5 .legend-color { background: #976A65; }
+
+.chart{
+  width:520px;
+  font-family:Arial, sans-serif;
+  display:grid;
+  gap:6px;
+}
+
+.row{
+  display:grid;
+}
+
+.bar{
+  display:grid;
+  grid-template-columns: calc(var(--p) * 1%) 1fr;
+  background:
+    linear-gradient(
+      to right,
+      var(--c) 0,
+      var(--c) calc(var(--p) * 1%),
+      #eee calc(var(--p) * 1%)
+    );
+  padding:4px 8px;
+  font-size:14px;
+  border-radius:4px;
+  white-space: nowrap;
+}
+
+.typeData{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 10px;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-top: 10px;
+}
+
+.typeData button{
+    display: grid;
+    justify-items : center;
+    align-items: center;
+    font-size: 20px;
+    border-radius: 10px;
+}
