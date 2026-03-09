@@ -102,7 +102,7 @@ function updateEmdErrors() {
 
                 medDocumentType.textContent = commits[i].medDocumentType;
                 count.textContent = commits[i].count;
-                countErrors.textContent = commits[i].countErrors;
+                countErrors.innerHTML = `<span class="badge-errors">${commits[i].countErrors}</span>`;
                 s2.innerHTML = `<span class="badge-s2">${commits[i].s2}</span>`;
                 s3.innerHTML = `<span class="badge-s3">${commits[i].s3}</span>`;
                 s5.innerHTML = `<span class="badge-s5">${commits[i].s5}</span>`;

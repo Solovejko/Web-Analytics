@@ -1,23 +1,94 @@
+:root {
+    /* ===== Цвета фона ===== */
+    --bg-page: #eef3f7;
+    --bg-panel: #f9fbfc;
+    --bg-card: #ffffff;
+    --bg-table-header: #f3f7fa;
+    --bg-row-hover: #f5f9fc;
+    --bg-row-even: #fbfdfe;
+
+    /* ===== Цвета текста ===== */
+    --text-main: #1f2937;
+    --text-title: #243746;
+    --text-on-dark: #ffffff;
+    --text-accent-dark: #10212c;
+
+    /* ===== Цвета интерфейса ===== */
+    --nav-bg: #dde6ec;
+    --nav-border: #c9d5dd;
+    --nav-button: #c4d0d8;
+    --nav-button-hover: #b2c0c9;
+
+    --button-bg: #ffffff;
+    --button-border: #b9c6cf;
+    --button-hover: #edf3f6;
+    --button-active: #c9d7df;
+
+    --button-active-main: #6e8796;
+    --button-active-second: #9db3c0;
+
+    /* ===== Цвета контента ===== */
+    --panel-border: #d8e1e7;
+    --card-border: #dbe4ea;
+    --table-border: #dbe4ea;
+    --table-row-border: #edf2f5;
+
+    /* ===== Цвета статусов ===== */
+    --status-s0: #969696;
+    --status-s1: #00ABD3;
+    --status-s2: #F47521;
+    --status-s3: #338AA9;
+    --status-s4: #00A78E;
+    --status-s5: #976A65;
+    --status-errors: #007fa0;
+
+    /* ===== Полупрозрачные фоны статусов ===== */
+    --status-errors-bg: rgba(0, 171, 211, 0.14);
+    --status-s2-bg: rgba(244, 117, 33, 0.16);
+    --status-s3-bg: rgba(51, 138, 169, 0.16);
+    --status-s5-bg: rgba(151, 106, 101, 0.16);
+
+    --badge-errors-bg: rgba(0, 171, 211, 0.15);
+    --badge-s2-bg: rgba(244, 117, 33, 0.15);
+    --badge-s3-bg: rgba(51, 138, 169, 0.15);
+    --badge-s5-bg: rgba(151, 106, 101, 0.15);
+
+    /* ===== Тени ===== */
+    --shadow-soft: 0 2px 8px rgba(31, 41, 55, 0.06);
+    --shadow-medium: 0 3px 10px rgba(31, 41, 55, 0.12);
+    --shadow-side-hover: 0 4px 12px rgba(31, 41, 55, 0.14);
+    --shadow-side-active: 0 2px 6px rgba(31, 41, 55, 0.10);
+    --shadow-card: 0 6px 18px rgba(31, 41, 55, 0.06);
+    --shadow-table: 0 4px 14px rgba(31, 41, 55, 0.05);
+
+    /* ===== Радиусы ===== */
+    --radius-large: 18px;
+    --radius-medium: 14px;
+    --radius-small: 12px;
+    --radius-nav: 22px;
+    --radius-card-inner: 16px;
+    --radius-bar: 7px;
+    --radius-badge: 6px;
+    --radius-color: 4px;
+}
+
+
+/* =========================
+   БАЗА
+   ========================= */
+
 html {
     overflow-y: auto;
-    background: #eef3f7;
+    background: var(--bg-page);
 }
 
 body {
     display: grid;
     grid-template-columns: 220px 1fr;
     margin: 0;
-    background-color: #eef3f7;
+    background-color: var(--bg-page);
     font-family: "Rubik", sans-serif;
-    color: #1f2937;
-}
-
-button {
-    border: 1px solid #b9c6cf;
-    background: #ffffff;
-    color: #1f2937;
-    transition: background-color 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
-    cursor: pointer;
+    color: var(--text-main);
 }
 
 main {
@@ -28,147 +99,194 @@ main {
 }
 
 h1 {
-    font-weight: 500;
-    text-align: center;
-    color: #243746;
     margin: 0;
     font-size: 28px;
+    font-weight: 500;
     line-height: 1.2;
     letter-spacing: 0.2px;
-}
-
-.lightStaticticСontent {
-    grid-template-rows: 1fr;
-}
-
-.extendedStaticticContent{
-    grid-template-rows: 40px 1fr;    
-}
-
-.lightStaticticСontent,
-.extendedStaticticContent {
-    display: grid;
-    padding: 16px 18px;
-    background: #f9fbfc;
-    border: 1px solid #d8e1e7;
-    border-radius: 18px;
-    box-shadow: 0 6px 18px rgba(31, 41, 55, 0.06);
-}
-
-.typeData {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    column-gap: 12px;
-    margin: 6px 10px 0 10px;
-}
-
-.typeData button {
-    display: grid;
-    justify-items: center;
-    align-items: center;
-    font-size: 18px;
-    border-radius: 14px;
-    min-height: 54px;
-    box-shadow: 0 2px 8px rgba(31, 41, 55, 0.08);
-}
-
-.dateTime {
-    display: grid;
-    justify-content: center;
-    column-gap: 8px;
-    margin: 0 10px;
-    grid-template-columns: repeat(5, 110px);
-}
-
-.dateTime button {
-    display: grid;
     text-align: center;
-    border-radius: 12px;
-    justify-items: center;
-    align-items: center;
-    font-size: 15px;
-    min-height: 46px;
-    box-shadow: 0 2px 8px rgba(31, 41, 55, 0.06);
+    color: var(--text-title);
 }
 
-.extendedStaticticType {
-    display: grid;
-    justify-content: start;
-    column-gap: 8px;
-    margin: 0 0 14px 0;
-    grid-template-columns: repeat(2, 190px);
+button {
+    cursor: pointer;
+    border: 1px solid var(--button-border);
+    background: var(--button-bg);
+    color: var(--text-main);
+    transition:
+        background-color 0.15s ease,
+        box-shadow 0.15s ease,
+        border-color 0.15s ease;
 }
 
-.extendedStaticticType button {
-    display: grid;
-    text-align: center;
-    border-radius: 12px;
-    justify-items: center;
-    align-items: center;
-    font-size: 15px;
-    min-height: 40px;
-    box-shadow: 0 2px 8px rgba(31, 41, 55, 0.06);
+
+/* =========================
+   СОСТОЯНИЯ КНОПОК
+   ========================= */
+
+.selectedMain {
+    background-color: var(--button-active-main) !important;
+    color: var(--text-on-dark) !important;
+    border-color: var(--button-active-main) !important;
 }
+
+.selectedSecond {
+    background-color: var(--button-active-second) !important;
+    color: var(--text-accent-dark) !important;
+    border-color: var(--button-active-second) !important;
+}
+
+.sideNavButton:hover {
+    background-color: var(--nav-button-hover);
+    box-shadow: var(--shadow-side-hover);
+}
+
+.sideNavButton:active {
+    background-color: var(--button-active-main);
+    box-shadow: var(--shadow-side-active);
+}
+
+.subButton:hover {
+    background-color: var(--button-hover);
+}
+
+.subButton:active {
+    background-color: var(--button-active);
+}
+
+
+/* =========================
+   ЛЕВОЕ МЕНЮ
+   ========================= */
 
 .sideNav {
     display: grid;
     grid-template-rows: repeat(4, 54px);
     row-gap: 12px;
     align-content: start;
-    padding: 12px;
-    background: #dde6ec;
-    border-right: 1px solid #c9d5dd;
     min-height: 100vh;
+    padding: 12px;
     box-sizing: border-box;
+    background: var(--nav-bg);
+    border-right: 1px solid var(--nav-border);
 }
 
 .sideNav .sideNavButton {
-    text-align: center;
     display: grid;
     align-items: center;
-    background-color: #c4d0d8;
-    color: #1f2937;
-    font-size: 18px;
-    border-radius: 22px;
     padding: 0 14px;
-    box-shadow: 0 3px 10px rgba(31, 41, 55, 0.12);
+    font-size: 18px;
+    text-align: center;
+    background-color: var(--nav-button);
+    color: var(--text-main);
+    border-radius: var(--radius-nav);
+    box-shadow: var(--shadow-medium);
 }
 
-.selectedMain {
-    background-color: #6e8796 !important;
-    color: #ffffff !important;
-    border-color: #6e8796 !important;
+
+/* =========================
+   ВЕРХНИЕ ПЕРЕКЛЮЧАТЕЛИ
+   ========================= */
+
+.typeData {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 12px;
+    margin: 6px 10px 0;
 }
 
-.selectedSecond {
-    background-color: #9db3c0 !important;
-    color: #10212c !important;
-    border-color: #9db3c0 !important;
+.dateTime {
+    display: grid;
+    justify-content: center;
+    grid-template-columns: repeat(5, 110px);
+    column-gap: 8px;
+    margin: 0 10px;
 }
 
-.sideNavButton:hover {
-    background-color: #b2c0c9;
-    box-shadow: 0 4px 12px rgba(31, 41, 55, 0.14);
+.extendedStaticticType {
+    display: grid;
+    justify-content: start;
+    grid-template-columns: repeat(2, 190px);
+    column-gap: 8px;
+    margin: 0 0 14px;
 }
 
-.sideNavButton:active {
-    background-color: #6e8796;
-    box-shadow: 0 2px 6px rgba(31, 41, 55, 0.10);
+.typeData button,
+.dateTime button,
+.extendedStaticticType button {
+    display: grid;
+    justify-items: center;
+    align-items: center;
+    text-align: center;
 }
 
-.subButton:hover {
-    background-color: #edf3f6;
+.typeData button {
+    min-height: 54px;
+    font-size: 18px;
+    border-radius: var(--radius-medium);
+    box-shadow: var(--shadow-soft);
 }
 
-.subButton:active {
-    background-color: #c9d7df;
+.dateTime button,
+.extendedStaticticType button {
+    font-size: 15px;
+    border-radius: var(--radius-small);
+    box-shadow: var(--shadow-soft);
 }
+
+.dateTime button {
+    min-height: 46px;
+}
+
+.extendedStaticticType button {
+    min-height: 40px;
+}
+
+
+/* =========================
+   ОСНОВНЫЕ КОНТЕНТНЫЕ БЛОКИ
+   ========================= */
+
+.lightStaticticСontent,
+.extendedStaticticContent {
+    display: grid;
+    padding: 16px 18px;
+    background: var(--bg-panel);
+    border: 1px solid var(--panel-border);
+    border-radius: var(--radius-large);
+    box-shadow: var(--shadow-card);
+}
+
+.lightStaticticСontent {
+    grid-template-rows: 1fr;
+}
+
+.extendedStaticticContent {
+    grid-template-rows: 40px 1fr;
+}
+
+
+/* =========================
+   ОСНОВНАЯ СТАТИСТИКА
+   ========================= */
 
 .statistic {
     display: grid;
     grid-template-rows: auto 1fr;
     gap: 18px;
     height: 100%;
+}
+
+.statisticCharLegent {
+    display: grid;
+    grid-template-columns: minmax(420px, 1fr) minmax(520px, 1fr);
+    align-items: center;
+    column-gap: 28px;
+    padding: 28px 30px;
+    background: var(--bg-card);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-card-inner);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
 }
 
 #statisticChart {
@@ -178,78 +296,80 @@ h1 {
     max-width: 100%;
 }
 
-.statisticCharLegent {
-    display: grid;
-    grid-template-columns: minmax(420px, 1fr) minmax(520px, 1fr);
-    align-items: center;
-    column-gap: 28px;
-    padding: 28px 30px;
-    background: #ffffff;
-    border: 1px solid #dbe4ea;
-    border-radius: 16px;
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.6);
-}
+
+/* =========================
+   ЛЕГЕНДА
+   ========================= */
 
 .legend {
     display: grid;
     grid-template-rows: repeat(6, auto);
     gap: 12px;
-    padding: 4px 0 4px 8px;
     align-content: center;
+    padding: 4px 0 4px 8px;
 }
 
 .legend-item {
-   display: grid;
-   grid-template-columns: 18px minmax(240px, 1fr) minmax(180px, 360px);
-   column-gap: 14px;
-   align-items: center;
-   min-height: 34px;
+    display: grid;
+    grid-template-columns: 18px minmax(240px, 1fr) minmax(180px, 360px);
+    column-gap: 14px;
+    align-items: center;
+    min-height: 34px;
 }
 
 .legend-color {
     width: 18px;
     height: 18px;
-    border-radius: 4px;
-    box-shadow: inset 0 1px 1px rgba(255,255,255,0.35);
+    border-radius: var(--radius-color);
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.35);
 }
 
-.s0 .legend-color { background: #969696; }
-.s1 .legend-color { background: #00ABD3; }
-.s2 .legend-color { background: #F47521; }
-.s3 .legend-color { background: #338AA9; }
-.s4 .legend-color { background: #00A78E; }
-.s5 .legend-color { background: #976A65; }
+.s0 .legend-color { background: var(--status-s0); }
+.s1 .legend-color { background: var(--status-s1); }
+.s2 .legend-color { background: var(--status-s2); }
+.s3 .legend-color { background: var(--status-s3); }
+.s4 .legend-color { background: var(--status-s4); }
+.s5 .legend-color { background: var(--status-s5); }
 
-.chart{
-  width:520px;
-  font-family:Arial, sans-serif;
-  display:grid;
-  gap:6px;
+
+/* =========================
+   ПОЛОСЫ В ЛЕГЕНДЕ
+   ========================= */
+
+.chart {
+    display: grid;
+    gap: 6px;
+    width: 520px;
+    font-family: Arial, sans-serif;
 }
 
 .row {
-  display: grid;
-  align-items: center;
+    display: grid;
+    align-items: center;
 }
 
 .bar {
-  display: grid;
-  grid-template-columns: calc(var(--p) * 1%) 1fr;
-  align-items: center;
-  min-height: 24px;
-  background:
-    linear-gradient(
-      to right,
-      var(--c) 0,
-      var(--c) calc(var(--p) * 1%),
-      #edf1f4 calc(var(--p) * 1%)
+    display: grid;
+    grid-template-columns: calc(var(--p) * 1%) 1fr;
+    align-items: center;
+    min-height: 24px;
+    padding: 4px 10px;
+    font-size: 14px;
+    white-space: nowrap;
+    color: var(--text-main);
+    border-radius: var(--radius-bar);
+    background: linear-gradient(
+        to right,
+        var(--c) 0,
+        var(--c) calc(var(--p) * 1%),
+        #edf1f4 calc(var(--p) * 1%)
     );
-  padding: 4px 10px;
-  font-size: 14px;
-  border-radius: 7px;
-  white-space: nowrap;
-  color: #1f2937;
 }
+
+
+/* =========================
+   ТАБЛИЦА ЭМД
+   ========================= */
 
 .emdErrorsContent {
     display: grid;
@@ -260,34 +380,34 @@ h1 {
     width: 100%;
     border-collapse: separate;
     border-spacing: 0;
-    background: #ffffff;
-    border: 1px solid #dbe4ea;
-    border-radius: 14px;
     overflow: hidden;
-    box-shadow: 0 4px 14px rgba(31, 41, 55, 0.05);
+    background: var(--bg-card);
+    border: 1px solid var(--table-border);
+    border-radius: var(--radius-medium);
+    box-shadow: var(--shadow-table);
 }
 
 .dataKash thead {
-    background: #f3f7fa;
+    background: var(--bg-table-header);
 }
 
 .dataKash thead th {
+    padding: 16px 18px;
     font-size: 15px;
     font-weight: 500;
-    color: #243746;
-    text-align: left;
-    padding: 16px 18px;
-    border-bottom: 1px solid #dbe4ea;
     white-space: nowrap;
+    text-align: left;
+    color: var(--text-title);
+    border-bottom: 1px solid var(--table-border);
 }
 
 .dataKash tbody td {
     padding: 16px 18px;
     font-size: 15px;
-    color: #1f2937;
-    vertical-align: top;
-    border-bottom: 1px solid #edf2f5;
     line-height: 1.45;
+    vertical-align: top;
+    color: var(--text-main);
+    border-bottom: 1px solid var(--table-row-border);
 }
 
 .dataKash tbody tr:last-child td {
@@ -295,12 +415,17 @@ h1 {
 }
 
 .dataKash tbody tr:nth-child(even) {
-    background: #fbfdfe;
+    background: var(--bg-row-even);
 }
 
 .dataKash tbody tr:hover {
-    background: #f5f9fc;
+    background: var(--bg-row-hover);
 }
+
+
+/* =========================
+   ШИРИНЫ И ВЫРАВНИВАНИЕ КОЛОНОК
+   ========================= */
 
 .dataKash th:first-child,
 .dataKash td:first-child {
@@ -324,21 +449,13 @@ h1 {
 .dataKash th:nth-child(6),
 .dataKash td:nth-child(6) {
     width: 5%;
-}
-
-.dataKash th:nth-child(n+2),
-.dataKash td:nth-child(n+2) {
-    text-align: right;
-}
-
-.dataKash th:nth-child(4),
-.dataKash td:nth-child(4),
-.dataKash th:nth-child(5),
-.dataKash td:nth-child(5),
-.dataKash th:nth-child(6),
-.dataKash td:nth-child(6) {
     padding-left: 10px;
     padding-right: 10px;
+}
+
+.dataKash th:nth-child(n + 2),
+.dataKash td:nth-child(n + 2) {
+    text-align: right;
 }
 
 .dataKash td:nth-child(3),
@@ -348,56 +465,64 @@ h1 {
     font-weight: 500;
 }
 
+
+/* =========================
+   ЦВЕТНЫЕ ЗАГОЛОВКИ КОЛОНОК
+   ========================= */
+
+.dataKash th:nth-child(3) {
+    background: var(--status-errors-bg);
+    color: var(--status-errors);
+}
+
 .dataKash th:nth-child(4) {
-    background: rgba(244, 117, 33, 0.16);
-    color: #F47521;
+    background: var(--status-s2-bg);
+    color: var(--status-s2);
 }
 
 .dataKash th:nth-child(5) {
-    background: rgba(51, 138, 169, 0.16);
-    color: #338AA9;
+    background: var(--status-s3-bg);
+    color: var(--status-s3);
 }
 
 .dataKash th:nth-child(6) {
-    background: rgba(151, 106, 101, 0.16);
-    color: #976A65;
+    background: var(--status-s5-bg);
+    color: var(--status-s5);
 }
 
-.dataKash td:nth-child(4) span,
-.dataKash td:nth-child(5) span,
-.dataKash td:nth-child(6) span {
-    display: inline-block;
-    padding: 4px 10px;
-    border-radius: 6px;
-}
 
-.dataKash th:nth-child(3) {
-    background: rgba(0, 171, 211, 0.14);
-    color: #007fa0;
-}
+/* =========================
+   BADGES ДЛЯ ЗНАЧЕНИЙ
+   ========================= */
 
+.badge-errors,
 .badge-s2,
 .badge-s3,
 .badge-s5 {
     display: inline-block;
-    padding: 4px 10px;
-    border-radius: 6px;
-    font-weight: 500;
     min-width: 28px;
+    padding: 4px 10px;
+    font-weight: 500;
     text-align: center;
+    border-radius: var(--radius-badge);
+}
+
+.badge-errors {
+    background: var(--badge-errors-bg);
+    color: var(--status-errors);
 }
 
 .badge-s2 {
-    background: rgba(244,117,33,0.15);
-    color: #F47521;
+    background: var(--badge-s2-bg);
+    color: var(--status-s2);
 }
 
 .badge-s3 {
-    background: rgba(51,138,169,0.15);
-    color: #338AA9;
+    background: var(--badge-s3-bg);
+    color: var(--status-s3);
 }
 
 .badge-s5 {
-    background: rgba(151,106,101,0.15);
-    color: #976A65;
+    background: var(--badge-s5-bg);
+    color: var(--status-s5);
 }
