@@ -103,9 +103,9 @@ function updateEmdErrors() {
                 medDocumentType.textContent = commits[i].medDocumentType;
                 count.textContent = commits[i].count;
                 countErrors.textContent = commits[i].countErrors;
-                s2.textContent = commits[i].s2;
-                s3.textContent = commits[i].s3;
-                s5.textContent = commits[i].s5;
+                s2.innerHTML = `<span class="badge-s2">${commits[i].s2}</span>`;
+                s3.innerHTML = `<span class="badge-s3">${commits[i].s3}</span>`;
+                s5.innerHTML = `<span class="badge-s5">${commits[i].s5}</span>`;
 
                 lineTable.appendChild(medDocumentType);
                 lineTable.appendChild(count);
