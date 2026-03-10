@@ -1,22 +1,18 @@
-const globalUrl = "http://188.243.158.80:3000";
-const TZ_OFFSET = 3 * 60 * 60 * 1000;
+const globalUrl = "http://94.19.80.148:3000";
 var LPU = "";
-var typeStatistic = "";
-var dateTimeLight = "";
+var typeStatistic = "lightStatictic";
+var dateTimeLight = "today";
 var startLight, endLight;
-var dateTimeExtended = "";
+var dateTimeExtended = "today";
 var startExtended, endExtended;
-var extendedStaticticType = "";
+var extendedStaticticType = "emdErrors";
 
 startTnitialization();
 
 function startTnitialization(){
-    typeStatistic = "lightStatictic";
-    activatingButton("typeData", typeStatistic, "selectedSecond");
 
-    dateTimeLight = "today";
+    activatingButton("typeData", typeStatistic, "selectedSecond");
     activatingButton("dateTime", dateTimeLight, "selectedSecond");
-    dateTimeExtended = "today";
 
     openLPUStatistic("main");
 }
@@ -39,6 +35,7 @@ function openLPUStatistic(id){
     activatingButton("sideNav", id, "selectedMain");
       
     updateStatisticContent();
+    updateErrors();
 }
 
 function loadCanvas(data){
@@ -47,6 +44,13 @@ function loadCanvas(data){
     const ctx = canvas.getContext("2d");
 
     const total = data.reduce((sum, d) => sum + d.value, 0);
+
+    if (total <= 0) {
+        clearCanvas();
+        return;
+    }
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
@@ -192,12 +196,13 @@ function clearCanvas(){
     const canvas = document.getElementById("statisticChart");
     const ctx = canvas.getContext("2d");
 
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
     const radius = 200;
     const innerRadius = 40;
 
-    // Нарисуем весь круг серым
     ctx.beginPath();
     ctx.moveTo(centerX, centerY);
 
@@ -205,7 +210,7 @@ function clearCanvas(){
     ctx.arc(centerX, centerY, innerRadius, Math.PI * 2, 0, true);
     ctx.closePath();
 
-    ctx.fillStyle = "#cccccc"; // серый цвет
+    ctx.fillStyle = "#cccccc";
     ctx.fill();
 
     ctx.strokeStyle = "#ffffff";
@@ -287,20 +292,35 @@ function updateStatisticContent(id = ""){
         if (typeStatistic == "lightStatictic"){
             dateTimeLight = id;
             activatingButton("dateTime", dateTimeLight, "selectedSecond");
-        }
-        else{
+
+            if (id !== "anotherDate") {
+                const dateRange = updateDate(dateTimeLight);
+                startLight = dateRange[0];
+                endLight = dateRange[1];
+            }
+        } else {
             dateTimeExtended = id;
-            activatingButton("dateTime", dateTimeExtended, "selectedSecond");   
-        } 
-    } 
+            activatingButton("dateTime", dateTimeExtended, "selectedSecond");
 
-    date_ = updateDate(dateTimeLight);
-    startLight = date_[0];
-    endLight = date_[1];
+            if (id !== "anotherDate") {
+                const dateRange = updateDate(dateTimeExtended);
+                startExtended = dateRange[0];
+                endExtended = dateRange[1];
+            }
+        }
+    } else {
+        if (dateTimeLight !== "anotherDate"){
+            const dateRange = updateDate(dateTimeLight);
+            startLight = dateRange[0];
+            endLight = dateRange[1];
+        }
 
-    date_ = updateDate(dateTimeExtended);
-    startExtended = date_[0];
-    endExtended = date_[1];
+        if (dateTimeExtended !== "anotherDate"){
+            const dateRange = updateDate(dateTimeExtended);
+            startExtended = dateRange[0];
+            endExtended = dateRange[1];
+        }
+    }
 
     if (typeStatistic == "lightStatictic")
         updateLightStatisticContent(); 
@@ -310,8 +330,8 @@ function updateStatisticContent(id = ""){
 
 function updateDate(dateTime){
     const now = new Date();
-    start = new Date(now);
-    end = new Date(now);
+    let start = new Date(now);
+    let end = new Date(now);
 
     if (dateTime == "today"){
         start.setHours(0,0,0,0);
@@ -343,21 +363,25 @@ function updateDate(dateTime){
 }
 
 function openLightStatistic(){
-    document.querySelector(".lightStaticticСontent").style.display = "grid";
+    document.querySelector(".lightStaticticContent").style.display = "grid";
     document.querySelector(".extendedStaticticContent").style.display = "none";
 
     typeStatistic = "lightStatictic";
     activatingButton("typeData", typeStatistic, "selectedSecond");
     activatingButton("dateTime", dateTimeLight, "selectedSecond");
+    closeCustomDatePanel();
 }
 
 function openExtendedStatictic(){
-    document.querySelector(".lightStaticticСontent").style.display = "none";
+    document.querySelector(".lightStaticticContent").style.display = "none";
     document.querySelector(".extendedStaticticContent").style.display = "grid";
 
     typeStatistic = "extendedStatictic";
     activatingButton("typeData", typeStatistic, "selectedSecond");
     activatingButton("dateTime", dateTimeExtended, "selectedSecond");
+    closeCustomDatePanel();
+
+    activatingButton("extendedStaticticType", extendedStaticticType, "selectedSecond");
 }
 
 function updateErrors(id = ""){
@@ -373,11 +397,93 @@ function updateErrors(id = ""){
         updateEmdErrors();
     }
  
-    if (extendedStaticticType == "statisticErrors"){
-        updateStatisticErrors();
+    if (extendedStaticticType == "statisticErrors"){    
         document.querySelector(".emdErrorsContent").style.display = "none";
-        document.querySelector(".statisticErrorsContent").style.display = "grid";     
+        document.querySelector(".statisticErrorsContent").style.display = "grid";
+        updateStatisticErrors();     
     }
+}
+
+function openCustomDatePanel() {
+    const panel = document.querySelector(".customDatePanel");
+    panel.style.display = "grid";
+    positionCustomDatePanel();
+}
+
+function closeCustomDatePanel() {
+    document.querySelector(".customDatePanel").style.display = "none";
+}
+
+function normalizeDateRange(startValue, endValue) {
+    const start = new Date(startValue);
+    const end = new Date(endValue);
+
+    start.setHours(0, 0, 0, 0);
+    end.setHours(23, 59, 59, 999);
+
+    return [start, end];
+}
+
+function applyCustomDateRange(options = {}) {
+    const { requireFilled = false, showAlert = true } = options;
+
+    const startValue = document.getElementById("customDateStart").value;
+    const endValue = document.getElementById("customDateEnd").value;
+
+    if (!startValue || !endValue) {
+        if (requireFilled && showAlert) {
+            alert("Выберите начальную и конечную дату");
+        }
+        return false;
+    }
+
+    if (startValue > endValue) {
+        if (showAlert) {
+            alert("Дата начала не может быть больше даты окончания");
+        }
+        return false;
+    }
+
+    const range = normalizeDateRange(startValue, endValue);
+
+    if (typeStatistic === "lightStatictic") {
+        dateTimeLight = "anotherDate";
+        startLight = range[0];
+        endLight = range[1];
+    } else {
+        dateTimeExtended = "anotherDate";
+        startExtended = range[0];
+        endExtended = range[1];
+    }
+
+    activatingButton("dateTime", "anotherDate", "selectedSecond");
+    updateStatisticContent();
+
+    return true;
+}
+
+function positionCustomDatePanel() {
+    const panel = document.querySelector(".customDatePanel");
+    const button = document.getElementById("anotherDate");
+    const main = document.querySelector("main");
+
+    const buttonRect = button.getBoundingClientRect();
+    const mainRect = main.getBoundingClientRect();
+
+    const top = buttonRect.bottom - mainRect.top + 8;
+    let left = buttonRect.left - mainRect.left;
+
+    const maxLeft = main.clientWidth - panel.offsetWidth - 10;
+    if (left > maxLeft) {
+        left = Math.max(10, maxLeft);
+    }
+
+    panel.style.top = `${top}px`;
+    panel.style.left = `${left}px`;
+}
+
+function isCustomDatePanelOpen() {
+    return document.querySelector(".customDatePanel").style.display === "grid";
 }
 
 document.getElementById("lightStatictic")
@@ -400,11 +506,49 @@ document.querySelectorAll(".extendedStaticticType .subButton").forEach(function(
 });
 
 document.querySelectorAll(".dateTime .subButton").forEach(function(elem){
-     elem.addEventListener("click", function(event) {
+    elem.addEventListener("click", function(event) {
         event.preventDefault();
-        updateStatisticContent(event.target.getAttribute("id"));
+
+        const id = event.target.getAttribute("id");
+
+        if (id === "anotherDate") {
+            if (isCustomDatePanelOpen()) {
+                if (applyCustomDateRange({ requireFilled: true, showAlert: true })) {
+                    closeCustomDatePanel();
+                }
+                return;
+            }
+
+            if (typeStatistic == "lightStatictic") {
+                dateTimeLight = "anotherDate";
+            } else {
+                dateTimeExtended = "anotherDate";
+            }
+
+            activatingButton("dateTime", "anotherDate", "selectedSecond");
+            openCustomDatePanel();
+            return;
+        }
+
+        closeCustomDatePanel();
+        updateStatisticContent(id);
     });
 });
+
+document.getElementById("applyCustomDate")
+    .addEventListener("click", function(event) {
+        event.preventDefault();
+
+        if (applyCustomDateRange({ requireFilled: true, showAlert: true })) {
+            closeCustomDatePanel();
+        }
+    });
+
+document.getElementById("cancelCustomDate")
+    .addEventListener("click", function(event) {
+        event.preventDefault();
+        closeCustomDatePanel();
+    });
 
 document.querySelectorAll(".sideNav .sideNavButton").forEach(function(elem){
      elem.addEventListener("click", function(event) {
@@ -412,4 +556,28 @@ document.querySelectorAll(".sideNav .sideNavButton").forEach(function(elem){
         openLPUStatistic(event.target.getAttribute("id"));
     });
 });
-   
+
+window.addEventListener("resize", function() {
+    const panel = document.querySelector(".customDatePanel");
+    if (panel.style.display !== "none") {
+        positionCustomDatePanel();
+    }
+});
+
+document.addEventListener("click", function(event) {
+    const panel = document.querySelector(".customDatePanel");
+    const anotherDateButton = document.getElementById("anotherDate");
+
+    if (!isCustomDatePanelOpen()) {
+        return;
+    }
+
+    const clickInsidePanel = panel.contains(event.target);
+    const clickOnAnotherDateButton = anotherDateButton.contains(event.target);
+
+    if (!clickInsidePanel && !clickOnAnotherDateButton) {
+        if (applyCustomDateRange({ requireFilled: true, showAlert: false })) {
+            closeCustomDatePanel();
+        }
+    }
+});

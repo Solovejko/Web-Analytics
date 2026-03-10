@@ -31,7 +31,26 @@
                 <button class="subButton" id="anotherDate">Другая дата</button>    
             </div>
 
-            <div class="lightStaticticСontent">
+            <div class="customDatePanel" style="display: none;">
+                <div class="customDateFields">
+                    <label>
+                        <span>Дата от</span>
+                        <input type="date" id="customDateStart">
+                    </label>
+
+                    <label>
+                        <span>Дата до</span>
+                        <input type="date" id="customDateEnd">
+                    </label>
+                </div>
+
+                <div class="customDateActions">
+                    <button class="subButton" id="applyCustomDate">Применить</button>
+                    <button class="subButton" id="cancelCustomDate">Отмена</button>
+                </div>
+            </div>
+
+            <div class="lightStaticticContent">
        
                 <div class="statistic">
                     <h1>Статистика взаимодействия с РЭМД</h1>
