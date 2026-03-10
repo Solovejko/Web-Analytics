@@ -6,6 +6,7 @@ var startLight, endLight;
 var dateTimeExtended = "today";
 var startExtended, endExtended;
 var extendedStaticticType = "emdErrors";
+let notificationTimer = null;
 
 startTnitialization();
 
@@ -432,14 +433,14 @@ function applyCustomDateRange(options = {}) {
 
     if (!startValue || !endValue) {
         if (requireFilled && showAlert) {
-            alert("Выберите начальную и конечную дату");
+            showNotification("Выберите начальную и конечную дату");
         }
         return false;
     }
 
     if (startValue > endValue) {
         if (showAlert) {
-            alert("Дата начала не может быть больше даты окончания");
+            showNotification("Дата начала не может быть больше даты окончания");
         }
         return false;
     }
@@ -484,6 +485,24 @@ function positionCustomDatePanel() {
 
 function isCustomDatePanelOpen() {
     return document.querySelector(".customDatePanel").style.display === "grid";
+}
+
+function showNotification(text) {
+    const notification = document.getElementById("notification");
+    const notificationText = document.getElementById("notificationText");
+
+    notificationText.textContent = text;
+
+    notification.classList.add("show");
+
+    if (notificationTimer) {
+        clearTimeout(notificationTimer);
+    }
+
+    notificationTimer = setTimeout(() => {
+        notification.classList.remove("show");
+        notificationTimer = null;
+    }, 3000);
 }
 
 document.getElementById("lightStatictic")

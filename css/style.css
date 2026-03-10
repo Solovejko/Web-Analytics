@@ -735,3 +735,38 @@ button {
     transform: scale(1.8);
     cursor: pointer;
 }
+
+/* =========================
+   ALERT
+   ========================= */
+
+.notification {
+    position: fixed;
+    pointer-events: none;
+    left: 50%;
+    bottom: 40px;
+    transform: translateX(-50%) translateY(20px);
+
+    padding: 14px 22px;
+    font-size: 14px;
+
+    background: var(--text-main);
+    color: var(--text-on-dark);
+
+    border-radius: var(--radius-small);
+    box-shadow: var(--shadow-medium);
+
+    opacity: 0;
+    pointer-events: none;
+
+    transition:
+        opacity 0.2s ease,
+        transform 0.2s ease;
+
+    z-index: 100;
+}
+
+.notification.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
