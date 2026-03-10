@@ -447,6 +447,74 @@ button {
     background: var(--bg-row-hover);
 }
 
+/* =========================
+   ТАБЛИЦА Ошибок
+   ========================= */
+
+   .statisticErrorsContent {
+    display: grid;
+    margin-top: 14px;
+    min-height: 0;
+    max-height: 620px;
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    background: var(--bg-card);
+    border: 1px solid var(--table-border);
+    border-radius: var(--radius-medium);
+    box-shadow: var(--shadow-table);
+}
+
+.dataKashErrors {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: var(--bg-card);
+}
+
+.dataKashErrors thead th {
+    padding: 16px 18px;
+    font-size: 15px;
+    font-weight: 500;
+    white-space: nowrap;
+    text-align: left;
+    color: var(--text-title);
+    border-bottom: 1px solid var(--table-border);
+
+    position: sticky;
+    top: 0;
+    z-index: 5;
+
+    background: var(--bg-table-header);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.dataKashErrors tbody td {
+    padding: 16px 18px;
+    font-size: 15px;
+    line-height: 1.45;
+    vertical-align: top;
+    color: var(--text-main);
+    border-bottom: 1px solid var(--table-row-border);
+}
+
+.dataKashErrors tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.dataKashErrors tbody tr:nth-child(even) {
+    background: var(--bg-row-even);
+}
+
+.dataKashErrors tbody tr:hover {
+    background: var(--bg-row-hover);
+}
+
+.dataKashErrors th:last-child,
+.dataKashErrors td:last-child {
+    width: 120px;
+    text-align: right;
+}
 
 /* =========================
    ШИРИНЫ И ВЫРАВНИВАНИЕ КОЛОНОК
@@ -539,6 +607,23 @@ button {
     font-weight: 500;
     text-align: center;
     border-radius: var(--radius-badge);
+    font-variant-numeric: tabular-nums;
+}
+
+.badge-all-errors{
+    font-variant-numeric: tabular-nums;   
+}
+
+.badge-count {
+    display: inline-block;
+    min-width: 34px;
+    padding: 6px 12px;
+    text-align: center;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    background: var(--badge-errors-bg);
+    color: var(--badge-errors);
+    border-radius: 10px;
 }
 
 .badge-errors {

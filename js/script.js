@@ -1,4 +1,4 @@
-const globalUrl = "https://188.243.158.80:3000";
+const globalUrl = "http://188.243.158.80:3000";
 const TZ_OFFSET = 3 * 60 * 60 * 1000;
 var LPU = "";
 var typeStatistic = "";
@@ -101,8 +101,8 @@ function updateEmdErrors() {
                 let s5 = document.createElement("td");
 
                 medDocumentType.textContent = commits[i].medDocumentType;
-                count.textContent = commits[i].count;
-               
+                
+                count.innerHTML = `<span class="badge-all-errors">${commits[i].count}</span>`;
                 countErrors.innerHTML = `<span class="${commits[i].countErrors == 0 ? 'badge-zero' : 'badge-errors'}">${commits[i].countErrors}</span>`;
                 s2.innerHTML = `<span class="${commits[i].s2 == 0 ? 'badge-zero' : 'badge-s2'}">${commits[i].s2}</span>`;
                 s3.innerHTML = `<span class="${commits[i].s3 == 0 ? 'badge-zero' : 'badge-s3'}">${commits[i].s3}</span>`;
@@ -143,7 +143,7 @@ function updateStatisticErrors(){
                 let count = document.createElement("td");
 
                 error.textContent = commits[i].message;
-                count.textContent = commits[i].count;
+                count.innerHTML = `<span class="badge-count">${commits[i].count}</span>`;
 
                 lineTable.appendChild(error);
                 lineTable.appendChild(count);
