@@ -52,6 +52,18 @@
     --badge-s2-bg: rgba(244, 117, 33, 0.15);
     --badge-s3-bg: rgba(51, 138, 169, 0.15);
     --badge-s5-bg: rgba(151, 106, 101, 0.15);
+    --badge-zero-bg: rgba(150, 150, 150, 0.12);
+    --badge-zero-text: #7b8794;
+
+    --badge-s2: #d45500;
+    --badge-s3: #1f6f8c;
+    --badge-s5: #7b4a45;
+    --badge-errors: #006e88;
+
+    --badge-errors-hover: #005a70;
+    --badge-s2-hover: #b34700;
+    --badge-s3-hover: #17566e;
+    --badge-s5-hover: #5f3834;
 
     /* ===== Тени ===== */
     --shadow-soft: 0 2px 8px rgba(31, 41, 55, 0.06);
@@ -374,17 +386,25 @@ button {
 .emdErrorsContent {
     display: grid;
     margin-top: 14px;
+    min-height: 0;
+    max-height: 620px;
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    background: var(--bg-card);
+    border: 1px solid var(--table-border);
+    border-radius: var(--radius-medium);
+    box-shadow: var(--shadow-table);
 }
 
 .dataKash {
     width: 100%;
     border-collapse: separate;
     border-spacing: 0;
-    overflow: hidden;
     background: var(--bg-card);
-    border: 1px solid var(--table-border);
-    border-radius: var(--radius-medium);
-    box-shadow: var(--shadow-table);
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
 }
 
 .dataKash thead {
@@ -399,6 +419,11 @@ button {
     text-align: left;
     color: var(--text-title);
     border-bottom: 1px solid var(--table-border);
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background: var(--bg-table-header);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
 }
 
 .dataKash tbody td {
@@ -471,22 +496,30 @@ button {
    ========================= */
 
 .dataKash th:nth-child(3) {
-    background: var(--status-errors-bg);
+    background:
+        linear-gradient(var(--status-errors-bg), var(--status-errors-bg)),
+        var(--bg-table-header);
     color: var(--status-errors);
 }
 
 .dataKash th:nth-child(4) {
-    background: var(--status-s2-bg);
+    background:
+        linear-gradient(var(--status-s2-bg), var(--status-s2-bg)),
+        var(--bg-table-header);
     color: var(--status-s2);
 }
 
 .dataKash th:nth-child(5) {
-    background: var(--status-s3-bg);
+    background:
+        linear-gradient(var(--status-s3-bg), var(--status-s3-bg)),
+        var(--bg-table-header);
     color: var(--status-s3);
 }
 
 .dataKash th:nth-child(6) {
-    background: var(--status-s5-bg);
+    background:
+        linear-gradient(var(--status-s5-bg), var(--status-s5-bg)),
+        var(--bg-table-header);
     color: var(--status-s5);
 }
 
@@ -495,6 +528,7 @@ button {
    BADGES ДЛЯ ЗНАЧЕНИЙ
    ========================= */
 
+.badge-zero,
 .badge-errors,
 .badge-s2,
 .badge-s3,
@@ -509,20 +543,41 @@ button {
 
 .badge-errors {
     background: var(--badge-errors-bg);
-    color: var(--status-errors);
+    color: var(--badge-errors);
 }
 
 .badge-s2 {
     background: var(--badge-s2-bg);
-    color: var(--status-s2);
+    color: var(--badge-s2);
 }
 
 .badge-s3 {
     background: var(--badge-s3-bg);
-    color: var(--status-s3);
+    color: var(--badge-s3);
 }
 
 .badge-s5 {
     background: var(--badge-s5-bg);
-    color: var(--status-s5);
+    color: var(--badge-s5);
+}
+
+.badge-zero {
+    background: var(--badge-zero-bg);
+    color: var(--badge-zero-text);
+}
+
+.dataKash tbody tr:hover .badge-errors {
+    color: var(--badge-errors-hover);
+}
+
+.dataKash tbody tr:hover .badge-s2 {
+    color: var(--badge-s2-hover);
+}
+
+.dataKash tbody tr:hover .badge-s3 {
+    color: var(--badge-s3-hover);
+}
+
+.dataKash tbody tr:hover .badge-s5 {
+    color: var(--badge-s5-hover);
 }

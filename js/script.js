@@ -1,4 +1,4 @@
-const globalUrl = "http://188.243.158.80:3000";
+const globalUrl = "https://188.243.158.80:3000";
 const TZ_OFFSET = 3 * 60 * 60 * 1000;
 var LPU = "";
 var typeStatistic = "";
@@ -102,10 +102,11 @@ function updateEmdErrors() {
 
                 medDocumentType.textContent = commits[i].medDocumentType;
                 count.textContent = commits[i].count;
-                countErrors.innerHTML = `<span class="badge-errors">${commits[i].countErrors}</span>`;
-                s2.innerHTML = `<span class="badge-s2">${commits[i].s2}</span>`;
-                s3.innerHTML = `<span class="badge-s3">${commits[i].s3}</span>`;
-                s5.innerHTML = `<span class="badge-s5">${commits[i].s5}</span>`;
+               
+                countErrors.innerHTML = `<span class="${commits[i].countErrors == 0 ? 'badge-zero' : 'badge-errors'}">${commits[i].countErrors}</span>`;
+                s2.innerHTML = `<span class="${commits[i].s2 == 0 ? 'badge-zero' : 'badge-s2'}">${commits[i].s2}</span>`;
+                s3.innerHTML = `<span class="${commits[i].s3 == 0 ? 'badge-zero' : 'badge-s3'}">${commits[i].s3}</span>`;
+                s5.innerHTML = `<span class="${commits[i].s5 == 0 ? 'badge-zero' : 'badge-s5'}">${commits[i].s5}</span>`;
 
                 lineTable.appendChild(medDocumentType);
                 lineTable.appendChild(count);
