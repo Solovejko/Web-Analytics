@@ -1,5 +1,6 @@
 const globalUrl = "http://94.19.80.148:3000";
 var LPU = "";
+var idLpu = "";
 var typeStatistic = "lightStatictic";
 var dateTimeLight = "today";
 var startLight, endLight;
@@ -7,6 +8,21 @@ var dateTimeExtended = "today";
 var startExtended, endExtended;
 var extendedStaticticType = "emdErrors";
 let notificationTimer = null;
+
+let listLpuId = {
+    main:     "",
+    kash:     "1.2.643.5.1.13.13.12.2.78.8575",
+    chud:     "1.2.643.5.1.13.13.12.2.78.8580",
+    plk114:   "1.2.643.5.1.13.13.12.2.78.8631",
+    gpb:      "1.2.643.5.1.13.13.12.2.78.8578",
+    plk81:    "1.2.643.5.1.13.13.12.2.78.8781",
+    kdp:      "1.2.643.5.1.13.13.12.2.78.8750",
+    pndr:     "1.2.643.5.1.13.13.12.2.78.8690",
+    stepmed:  "1.2.643.5.1.13.13.12.2.78.8680",
+    pptd:     "1.2.643.5.1.13.13.12.2.78.8574",
+    beht:     "1.2.643.5.1.13.13.12.2.78.8807",
+    hosp:     "1.2.643.5.1.13.13.12.2.78.8566"
+};
 
 startTnitialization();
 
@@ -32,11 +48,16 @@ function openLPUStatistic(id){
         return;
 
     LPU = id;
+    idLpu = listLpuId[LPU];
 
     activatingButton("sideNav", id, "selectedMain");
       
     updateStatisticContent();
-    updateErrors();
+
+    if (typeStatistic == "lightStatictic")
+        updateErrors();
+    else
+        updateLightStatisticContent(); 
 }
 
 function loadCanvas(data){
@@ -88,7 +109,7 @@ function updateEmdErrors() {
         elem.remove();
     })
 
-    let url = `${globalUrl}/kash/emdErrors?start=${encodeURIComponent(startExtended.toISOString())}&end=${encodeURIComponent(endExtended.toISOString())}`;
+    let url = `${globalUrl}/main/emdErrors?organization=${idLpu}&start=${encodeURIComponent(startExtended.toISOString())}&end=${encodeURIComponent(endExtended.toISOString())}`;
 
     fetch(url)
         .then(response => {return response.json()})
@@ -134,7 +155,7 @@ function updateStatisticErrors(){
         elem.remove();
     })
 
-    let url = `${globalUrl}/kash/statisticErrors?start=${encodeURIComponent(startExtended.toISOString())}&end=${encodeURIComponent(endExtended.toISOString())}`;
+    let url = `${globalUrl}/main/statisticErrors?organization=${idLpu}&start=${encodeURIComponent(startExtended.toISOString())}&end=${encodeURIComponent(endExtended.toISOString())}`;
 
     fetch(url)
         .then(response => {return response.json()})
@@ -221,7 +242,9 @@ function clearCanvas(){
 
 function updateLightStatisticContent(){
 
-    let url = `${globalUrl}/kash/lightStatistic?start=${encodeURIComponent(startLight.toISOString())}&end=${encodeURIComponent(endLight.toISOString())}`;
+    clearLightStatistic();
+
+    let url = `${globalUrl}/main/lightStatistic?organization=${idLpu}&start=${encodeURIComponent(startLight.toISOString())}&end=${encodeURIComponent(endLight.toISOString())}`;
 
     fetch(url)
         .then(response => {return response.json()})
@@ -237,7 +260,6 @@ function updateLightStatisticContent(){
                     { value: commits[0].s5 / commits[0].count * 100, color: "#976A65" }
                 ];
             } else {
-                clearLightStatistic();
                 return;
             }
 
