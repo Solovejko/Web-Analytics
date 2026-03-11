@@ -103,6 +103,14 @@ function loadCanvas(data){
     });
 }
 
+function showChartLoader(){
+    document.getElementById("chartLoader").style.display = "grid";
+}
+
+function hideChartLoader(){
+    document.getElementById("chartLoader").style.display = "none";
+}
+
 function updateEmdErrors() {
 
     document.querySelectorAll(".dataKash tbody tr").forEach(elem => {
@@ -243,6 +251,7 @@ function clearCanvas(){
 function updateLightStatisticContent(){
 
     clearLightStatistic();
+    showChartLoader(); 
 
     let url = `${globalUrl}/main/lightStatistic?organization=${idLpu}&start=${encodeURIComponent(startLight.toISOString())}&end=${encodeURIComponent(endLight.toISOString())}`;
 
@@ -260,6 +269,7 @@ function updateLightStatisticContent(){
                     { value: commits[0].s5 / commits[0].count * 100, color: "#976A65" }
                 ];
             } else {
+                hideChartLoader();
                 return;
             }
 
@@ -287,9 +297,11 @@ function updateLightStatisticContent(){
             s5.style.setProperty("--p", data[5].value);
             s5.querySelector(".bar").textContent = commits[0].s5 + " (" + (data[5].value.toFixed(2) < 1? "<1": data[5].value.toFixed(2)) + "%)";
 
+            hideChartLoader();
             loadCanvas(data);             
         })
         .catch(err => {
+            hideChartLoader();
             alert('Произошла ошибка при загрузке данных');
             console.error(err);
         }); 
