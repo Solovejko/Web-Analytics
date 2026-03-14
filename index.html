@@ -166,9 +166,34 @@
                         <tbody>
                         </tbody>
                     </table>
-                </div>            
+                </div>     
             </div>
         </main>
+
+        <div class="detailModalOverlay" id="detailModalOverlay" style="display: none;">
+            <div class="detailModal" id="detailModal">
+                <div class="detailHeader">
+                    <div class="detailTitle" id="detailTitle">Список отправок</div>
+                    <button class="subButton" id="closeDetailTable">Закрыть</button>
+                </div>
+
+                <div class="detailTableWrap">
+                    <table class="detailTable">
+                        <thead>
+                            <tr>
+                                <th>ID документа</th>
+                                <th>ID случая/МИС</th>
+                                <th>Дата создания</th>
+                                <th>Дата отправки</th>
+                                <th>Статус</th>
+                                <th>Ошибка / сообщение</th>
+                            </tr>
+                        </thead>
+                        <tbody id="detailTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
 
         <script src="js/script.js"></script>
 

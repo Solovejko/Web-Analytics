@@ -11,6 +11,12 @@ let notificationTimer = null;
 let selectedMedDocumentType = "";
 let selectedErrorMessage = "";
 
+let detailMedDocumentType = "";
+let detailStatusFilter = "";
+let detailColumnType = "";
+let detailErrorMessage = "";
+let detailSourceType = "";
+
 let listLpuId = {
     main:     "",
     kash:     "1.2.643.5.1.13.13.12.2.78.8575",
@@ -53,6 +59,7 @@ function openLPUStatistic(id){
     LPU = id;
     idLpu = listLpuId[LPU];
     resetLinkedSelections();
+    resetDetailSelection();
 
     activatingButton("sideNav", id, "selectedMain");
       
@@ -86,24 +93,24 @@ function loadCanvas(data){
     let startAngle = -Math.PI / 2;
 
     data.forEach(segment => {
-    const sliceAngle = (segment.value / total) * Math.PI * 2;
-    const endAngle = startAngle + sliceAngle;
+        const sliceAngle = (segment.value / total) * Math.PI * 2;
+        const endAngle = startAngle + sliceAngle;
 
-    ctx.beginPath();
-    ctx.moveTo(centerX, centerY);
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY);
 
-    ctx.arc(centerX, centerY, radius, startAngle, endAngle);
-    ctx.arc(centerX, centerY, innerRadius, endAngle, startAngle, true);
-    ctx.closePath();
+        ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+        ctx.arc(centerX, centerY, innerRadius, endAngle, startAngle, true);
+        ctx.closePath();
 
-    ctx.fillStyle = segment.color;
-    ctx.fill();
+        ctx.fillStyle = segment.color;
+        ctx.fill();
 
-    ctx.strokeStyle = "#ffffff";
-    ctx.lineWidth = 2;
-    ctx.stroke();
+        ctx.strokeStyle = "#ffffff";
+        ctx.lineWidth = 2;
+        ctx.stroke();
 
-    startAngle = endAngle;
+        startAngle = endAngle;
     });
 }
 
@@ -113,6 +120,60 @@ function showChartLoader(){
 
 function hideChartLoader(){
     document.getElementById("chartLoader").style.display = "none";
+}
+
+function createErrorCountButton(value, errorMessage) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "detailCountButton badge-count";
+    button.textContent = value;
+
+    if (
+        detailSourceType === "errorMessage" &&
+        detailErrorMessage === errorMessage &&
+        detailMedDocumentType === selectedMedDocumentType
+    ) {
+        button.classList.add("activeDetailButton");
+    }
+
+    button.addEventListener("click", function(event) {
+        event.preventDefault();
+
+        openErrorDetailTable(errorMessage);
+    });
+
+    return button;
+}
+
+function createDetailCountButton(value, className, medDocumentType, statusFilter, columnType) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = `detailCountButton ${className}`;
+    button.textContent = value;
+
+    if (value == 0) {
+        button.classList.add("disabledDetailButton");
+    }
+
+    if (
+        detailMedDocumentType === medDocumentType &&
+        detailStatusFilter === statusFilter &&
+        detailColumnType === columnType
+    ) {
+        button.classList.add("activeDetailButton");
+    }
+
+    button.addEventListener("click", function(event) {
+        event.preventDefault();
+
+        if (Number(value) === 0) {
+            return;
+        }
+
+        openDetailTable(medDocumentType, statusFilter, columnType);
+    });
+
+    return button;
 }
 
 function updateEmdErrors() {
@@ -159,16 +220,45 @@ function updateEmdErrors() {
                         selectedMedDocumentType === currentMedDocumentType ? "" : currentMedDocumentType;
 
                     renderLinkedFilters();
+                    resetDetailSelection();
                     updateErrors("statisticErrors");
                 });
 
                 medDocumentType.appendChild(medDocumentButton);
 
                 count.innerHTML = `<span class="badge-all-errors">${commits[i].count}</span>`;
-                countErrors.innerHTML = `<span class="${commits[i].countErrors == 0 ? 'badge-zero' : 'badge-errors'}">${commits[i].countErrors}</span>`;
-                s2.innerHTML = `<span class="${commits[i].s2 == 0 ? 'badge-zero' : 'badge-s2'}">${commits[i].s2}</span>`;
-                s3.innerHTML = `<span class="${commits[i].s3 == 0 ? 'badge-zero' : 'badge-s3'}">${commits[i].s3}</span>`;
-                s5.innerHTML = `<span class="${commits[i].s5 == 0 ? 'badge-zero' : 'badge-s5'}">${commits[i].s5}</span>`;
+
+                countErrors.appendChild(createDetailCountButton(
+                    commits[i].countErrors,
+                    commits[i].countErrors == 0 ? "badge-zero" : "badge-errors",
+                    currentMedDocumentType,
+                    "errors",
+                    "countErrors"
+                ));
+
+                s2.appendChild(createDetailCountButton(
+                    commits[i].s2,
+                    commits[i].s2 == 0 ? "badge-zero" : "badge-s2",
+                    currentMedDocumentType,
+                    "2",
+                    "s2"
+                ));
+
+                s3.appendChild(createDetailCountButton(
+                    commits[i].s3,
+                    commits[i].s3 == 0 ? "badge-zero" : "badge-s3",
+                    currentMedDocumentType,
+                    "3",
+                    "s3"
+                ));
+
+                s5.appendChild(createDetailCountButton(
+                    commits[i].s5,
+                    commits[i].s5 == 0 ? "badge-zero" : "badge-s5",
+                    currentMedDocumentType,
+                    "5",
+                    "s5"
+                ));
 
                 lineTable.appendChild(medDocumentType);
                 lineTable.appendChild(count);
@@ -225,11 +315,15 @@ function updateStatisticErrors() {
                         selectedErrorMessage === currentErrorMessage ? "" : currentErrorMessage;
 
                     renderLinkedFilters();
+                    resetDetailSelection();
                     updateErrors("emdErrors");
                 });
 
                 error.appendChild(errorButton);
-                count.innerHTML = `<span class="badge-count">${commits[i].count}</span>`;
+                count.appendChild(createErrorCountButton(
+                    commits[i].count,
+                    currentErrorMessage
+                ));
 
                 lineTable.appendChild(error);
                 lineTable.appendChild(count);
@@ -409,6 +503,10 @@ function updateStatisticContent(id = ""){
         }
     }
 
+    if (typeStatistic == "extendedStatictic") {
+        resetDetailSelection();
+    }
+
     if (typeStatistic == "lightStatictic")
         updateLightStatisticContent(); 
     else
@@ -457,6 +555,7 @@ function openLightStatistic(){
     activatingButton("typeData", typeStatistic, "selectedSecond");
     activatingButton("dateTime", dateTimeLight, "selectedSecond");
     closeCustomDatePanel();
+    resetDetailSelection();
 }
 
 function openExtendedStatictic(){
@@ -476,6 +575,7 @@ function updateErrors(id = ""){
     if (id != ""){
         extendedStaticticType = id;
         activatingButton("extendedStaticticType", extendedStaticticType, "selectedSecond");
+        resetDetailSelection();
     }
 
     renderLinkedFilters();
@@ -549,6 +649,7 @@ function applyCustomDateRange(options = {}) {
 
     if (typeStatistic === "extendedStatictic") {
         resetLinkedSelections();
+        resetDetailSelection();
     }
 
     updateStatisticContent();
@@ -655,6 +756,200 @@ function refreshExtendedTables() {
     updateStatisticErrors();
 }
 
+function resetDetailSelection() {
+    detailMedDocumentType = "";
+    detailStatusFilter = "";
+    detailColumnType = "";
+    detailErrorMessage = "";
+    detailSourceType = "";
+    hideDetailTable();
+}
+
+function hideDetailTable() {
+    const overlay = document.getElementById("detailModalOverlay");
+    const body = document.getElementById("detailTableBody");
+    const title = document.getElementById("detailTitle");
+
+    if (overlay) {
+        overlay.style.display = "none";
+    }
+
+    if (body) {
+        body.innerHTML = "";
+    }
+
+    if (title) {
+        title.textContent = "Список отправок";
+    }
+}
+
+function getStatusTitle(statusFilter) {
+    if (statusFilter === "errors") return "Отправки с ошибкой";
+    if (statusFilter === "2") return "Статус 2 - Ошибка формирования";
+    if (statusFilter === "3") return "Статус 3 - Ошибка первичной валидации";
+    if (statusFilter === "5") return "Статус 5 - Документ отклонен ЕГИСЗ";
+    return "Список отправок";
+}
+
+function openDetailTable(medDocumentType, statusFilter, columnType) {
+    const isSameSelection =
+        detailSourceType === "status" &&
+        detailMedDocumentType === medDocumentType &&
+        detailStatusFilter === statusFilter &&
+        detailColumnType === columnType &&
+        detailErrorMessage === selectedErrorMessage;
+
+    if (isSameSelection) {
+        resetDetailSelection();
+        updateEmdErrors();
+        return;
+    }
+
+    detailSourceType = "status";
+    detailMedDocumentType = medDocumentType;
+    detailStatusFilter = statusFilter;
+    detailColumnType = columnType;
+    detailErrorMessage = selectedErrorMessage;
+
+    updateEmdErrorDetails();
+}
+
+function openErrorDetailTable(errorMessage) {
+    const isSameSelection =
+        detailSourceType === "errorMessage" &&
+        detailErrorMessage === errorMessage &&
+        detailMedDocumentType === selectedMedDocumentType;
+
+    if (isSameSelection) {
+        resetDetailSelection();
+        updateStatisticErrors();
+        return;
+    }
+
+    detailSourceType = "errorMessage";
+    detailErrorMessage = errorMessage;
+    detailMedDocumentType = selectedMedDocumentType;
+    detailStatusFilter = "";
+    detailColumnType = "";
+
+    updateEmdErrorDetails();
+}
+
+function formatDateTime(value) {
+    if (!value) return "";
+
+    const date = new Date(value);
+
+    if (Number.isNaN(date.getTime())) {
+        return value;
+    }
+
+    return date.toLocaleString("ru-RU");
+}
+
+function updateEmdErrorDetails() {
+    const body = document.getElementById("detailTableBody");
+    const overlay = document.getElementById("detailModalOverlay");
+
+    body.innerHTML = "";
+
+    let titleText = "Список отправок";
+    let query = {};
+
+    if (detailSourceType === "status") {
+        if (!detailMedDocumentType || !detailStatusFilter) {
+            hideDetailTable();
+            return;
+        }
+
+        const titleParts = [
+            getStatusTitle(detailStatusFilter),
+            `по документу: ${detailMedDocumentType}`
+        ];
+
+        if (detailErrorMessage) {
+            titleParts.push(`ошибка: ${detailErrorMessage}`);
+        }
+
+        titleText = titleParts.join(" | ");
+
+        query = {
+            medDocumentType: detailMedDocumentType,
+            errorMessage: detailErrorMessage,
+            statusFilter: detailStatusFilter
+        };
+    }
+
+    if (detailSourceType === "errorMessage") {
+        if (!detailErrorMessage) {
+            hideDetailTable();
+            return;
+        }
+
+        const titleParts = [
+            `Отправки с ошибкой: ${detailErrorMessage}`
+        ];
+
+        if (detailMedDocumentType) {
+            titleParts.push(`по документу: ${detailMedDocumentType}`);
+        }
+
+        titleText = titleParts.join(" | ");
+
+        query = {
+            medDocumentType: detailMedDocumentType,
+            errorMessage: detailErrorMessage
+        };
+    }
+
+    document.getElementById("detailTitle").textContent = titleText;
+
+    let url = `${globalUrl}/main/emdErrorDetails?${buildExtendedQuery(query)}`;
+
+    fetch(url)
+        .then(response => response.json())
+        .then(commits => {
+            body.innerHTML = "";
+
+            for (let i = 0; i < commits.length; i++) {
+                const tr = document.createElement("tr");
+
+                const tdIdDocument = document.createElement("td");
+                const tdIdMis = document.createElement("td");
+                const tdCreationDate = document.createElement("td");
+                const tdLastAttemptDate = document.createElement("td");
+                const tdStatus = document.createElement("td");
+                const tdMessage = document.createElement("td");
+
+                tdIdDocument.textContent = commits[i].idDocumentMis || "";
+                tdIdMis.textContent = commits[i].idMis || "";
+                tdCreationDate.textContent = formatDateTime(commits[i].creationDate);
+                tdLastAttemptDate.textContent = formatDateTime(commits[i].lastAttemptDate);
+                tdStatus.textContent = commits[i].currentStatus;
+                tdMessage.textContent = commits[i].message || "";
+
+                tr.appendChild(tdIdDocument);
+                tr.appendChild(tdIdMis);
+                tr.appendChild(tdCreationDate);
+                tr.appendChild(tdLastAttemptDate);
+                tr.appendChild(tdStatus);
+                tr.appendChild(tdMessage);
+
+                body.appendChild(tr);
+            }
+
+            overlay.style.display = "flex";
+
+            updateEmdErrors();
+            updateStatisticErrors();
+        })
+        .catch(err => {
+            hideDetailTable();
+            showNotification("Произошла ошибка при загрузке списка отправок");
+            console.error(err);
+        });
+}
+
 document.getElementById("lightStatictic")
     .addEventListener("click", function(event) {
         event.preventDefault();
@@ -703,6 +998,7 @@ document.querySelectorAll(".dateTime .subButton").forEach(function(elem){
        
         if (typeStatistic == "extendedStatictic") {
             resetLinkedSelections();
+            resetDetailSelection();
         }
 
         updateStatisticContent(id);
@@ -761,6 +1057,7 @@ document.getElementById("clearMedDocumentFilter")
         event.preventDefault();
         selectedMedDocumentType = "";
         renderLinkedFilters();
+        resetDetailSelection();
         refreshExtendedTables();
     });
 
@@ -769,5 +1066,23 @@ document.getElementById("clearErrorFilter")
         event.preventDefault();
         selectedErrorMessage = "";
         renderLinkedFilters();
+        resetDetailSelection();
         refreshExtendedTables();
+    });
+
+document.getElementById("closeDetailTable")
+    .addEventListener("click", function(event) {
+        event.preventDefault();
+        resetDetailSelection();
+        updateEmdErrors();
+        updateStatisticErrors();
+    });
+
+document.getElementById("detailModalOverlay")
+    .addEventListener("click", function(event) {
+        if (event.target.id === "detailModalOverlay") {
+            resetDetailSelection();
+            updateEmdErrors();
+            updateStatisticErrors();
+        }
     });
