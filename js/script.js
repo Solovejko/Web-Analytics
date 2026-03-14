@@ -476,7 +476,9 @@ function updateErrors(id = ""){
     if (id != ""){
         extendedStaticticType = id;
         activatingButton("extendedStaticticType", extendedStaticticType, "selectedSecond");
-    } 
+    }
+
+    renderLinkedFilters();
 
     if (extendedStaticticType == "emdErrors"){
         document.querySelector(".emdErrorsContent").style.display = "grid";
@@ -617,21 +619,29 @@ function renderLinkedFilters() {
     const medBlock = document.getElementById("medDocumentFilter");
     const errorBlock = document.getElementById("errorFilter");
 
-    if (selectedMedDocumentType) {
+    medBlock.style.display = "none";
+    errorBlock.style.display = "none";
+
+    if (typeStatistic !== "extendedStatictic") {
+        wrapper.style.display = "none";
+        return;
+    }
+
+    if (extendedStaticticType === "statisticErrors" && selectedMedDocumentType) {
         document.getElementById("medDocumentFilterText").textContent = selectedMedDocumentType;
         medBlock.style.display = "flex";
-    } else {
-        medBlock.style.display = "none";
+        wrapper.style.display = "flex";
+        return;
     }
 
-    if (selectedErrorMessage) {
+    if (extendedStaticticType === "emdErrors" && selectedErrorMessage) {
         document.getElementById("errorFilterText").textContent = selectedErrorMessage;
         errorBlock.style.display = "flex";
-    } else {
-        errorBlock.style.display = "none";
+        wrapper.style.display = "flex";
+        return;
     }
 
-    wrapper.style.display = (selectedMedDocumentType || selectedErrorMessage) ? "flex" : "none";
+    wrapper.style.display = "none";
 }
 
 function resetLinkedSelections() {

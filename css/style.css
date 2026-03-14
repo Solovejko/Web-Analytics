@@ -223,12 +223,21 @@ button {
     margin: 0 10px;
 }
 
+.extendedTopBar {
+    display: grid;
+    grid-template-columns: 390px 1fr;
+    align-items: center;
+    column-gap: 16px;
+    min-height: 56px;
+    margin-bottom: 14px;
+}
+
 .extendedStaticticType {
     display: grid;
     justify-content: start;
     grid-template-columns: repeat(2, 190px);
     column-gap: 8px;
-    margin: 0 0 14px;
+    margin: 0;
 }
 
 .typeData button,
@@ -283,7 +292,7 @@ button {
 }
 
 .extendedStaticticContent {
-    grid-template-rows: 40px auto 1fr;
+    grid-template-rows: auto 1fr;
 }
 
 
@@ -394,7 +403,7 @@ button {
 
 .emdErrorsContent {
     display: grid;
-    margin-top: 8px;
+    margin-top: 0;
     min-height: 0;
     overflow-y: auto;
     overflow-x: hidden;
@@ -455,13 +464,14 @@ button {
     background: var(--bg-row-hover);
 }
 
+
 /* =========================
-   ТАБЛИЦА Ошибок
+   ТАБЛИЦА ОШИБОК
    ========================= */
 
-   .statisticErrorsContent {
+.statisticErrorsContent {
     display: grid;
-    margin-top: 8px;
+    margin-top: 0;
     min-height: 0;
     overflow-y: auto;
     overflow-x: hidden;
@@ -487,11 +497,9 @@ button {
     text-align: left;
     color: var(--text-title);
     border-bottom: 1px solid var(--table-border);
-
     position: sticky;
     top: 0;
     z-index: 5;
-
     background: var(--bg-table-header);
     box-shadow: 0 2px 6px rgba(0,0,0,0.05);
 }
@@ -522,6 +530,7 @@ button {
     width: 120px;
     text-align: right;
 }
+
 
 /* =========================
    ШИРИНЫ И ВЫРАВНИВАНИЕ КОЛОНОК
@@ -617,8 +626,8 @@ button {
     font-variant-numeric: tabular-nums;
 }
 
-.badge-all-errors{
-    font-variant-numeric: tabular-nums;   
+.badge-all-errors {
+    font-variant-numeric: tabular-nums;
 }
 
 .badge-count {
@@ -674,6 +683,7 @@ button {
     color: var(--badge-s5-hover);
 }
 
+
 /* =========================
    ПАНЕЛЬ ДИАПАЗОНОВ ДАТ
    ========================= */
@@ -681,13 +691,10 @@ button {
 .customDatePanel {
     position: absolute;
     z-index: 20;
-
     display: grid;
     gap: 14px;
-
     width: min(520px, calc(100% - 40px));
     padding: 16px 18px;
-
     background: var(--bg-card);
     border: 1px solid var(--panel-border);
     border-radius: var(--radius-medium);
@@ -736,6 +743,7 @@ button {
     cursor: pointer;
 }
 
+
 /* =========================
    ALERT
    ========================= */
@@ -746,23 +754,17 @@ button {
     left: 50%;
     bottom: 40px;
     transform: translateX(-50%) translateY(20px);
-
     padding: 14px 22px;
     font-size: 14px;
-
     background: var(--text-main);
     color: var(--text-on-dark);
-
     border-radius: var(--radius-small);
     box-shadow: var(--shadow-medium);
-
     opacity: 0;
     pointer-events: none;
-
     transition:
         opacity 0.2s ease,
         transform 0.2s ease;
-
     z-index: 100;
 }
 
@@ -770,6 +772,7 @@ button {
     opacity: 1;
     transform: translateX(-50%) translateY(0);
 }
+
 
 /* =========================
    СПИННЕР
@@ -785,25 +788,19 @@ button {
 .chartLoader {
     position: absolute;
     inset: 0;
-
     display: none;
     place-items: center;
-
     background: rgba(249, 251, 252, 0.65);
     border-radius: var(--radius-card-inner);
 }
 
 .chartLoader::after {
     content: "";
-
     width: 48px;
     height: 48px;
-
     border: 4px solid rgba(0,0,0,0.08);
     border-top: 4px solid var(--button-active-main);
-
     border-radius: 50%;
-
     animation: chartSpin 0.9s linear infinite;
 }
 
@@ -812,15 +809,20 @@ button {
     to { transform: rotate(360deg); }
 }
 
+
 /* =========================
-   Фильтры
+   ФИЛЬТРЫ
    ========================= */
 
 .linkedFilters {
     display: flex;
+    justify-content: flex-end;
+    align-items: flex-start;
     flex-wrap: wrap;
     gap: 8px;
-    margin: 12px 0 16px;
+    margin: 0;
+    min-width: 0;
+    overflow: hidden;
 }
 
 .linkedFilterItem {
@@ -828,6 +830,7 @@ button {
     align-items: center;
     gap: 10px;
     max-width: 100%;
+    min-width: 0;
     padding: 8px 12px;
     background: var(--bg-card);
     border: 1px solid var(--panel-border);
@@ -839,7 +842,10 @@ button {
 }
 
 .linkedFilterItem span {
-    display: inline;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     font-size: 14px;
     line-height: 1.35;
     color: var(--text-main);
@@ -874,6 +880,11 @@ button {
 
 .tableLinkButton:hover {
     text-decoration: underline;
+}
+
+.tableLinkButton:focus,
+.tableLinkButton:focus-visible {
+    outline: none;
 }
 
 .tableLinkButton.activeLink {
