@@ -125,6 +125,17 @@
                     <button class="subButton" id="emdErrors">ЭМД</button>
                     <button class="subButton" id="statisticErrors">Анализ ошибок</button>  
                 </div>
+                <div class="linkedFilters" id="linkedFilters" style="display: none;">
+                    <div class="linkedFilterItem" id="medDocumentFilter" style="display: none;">
+                        <span>Фильтр ошибок по ЭМД: <strong id="medDocumentFilterText"></strong></span>
+                        <button class="subButton clearLinkedFilterButton" id="clearMedDocumentFilter">Сбросить</button>
+                    </div>
+
+                    <div class="linkedFilterItem" id="errorFilter" style="display: none;">
+                        <span>Фильтр ЭМД по ошибке: <strong id="errorFilterText"></strong></span>
+                        <button class="subButton clearLinkedFilterButton" id="clearErrorFilter">Сбросить</button>
+                    </div>
+                </div>
                 <div class="emdErrorsContent" style="display: none;">
                     <table class="dataKash">
                         <thead>

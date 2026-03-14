@@ -283,7 +283,7 @@ button {
 }
 
 .extendedStaticticContent {
-    grid-template-rows: 40px 1fr;
+    grid-template-rows: 40px auto 1fr;
 }
 
 
@@ -394,7 +394,7 @@ button {
 
 .emdErrorsContent {
     display: grid;
-    margin-top: 14px;
+    margin-top: 8px;
     min-height: 0;
     overflow-y: auto;
     overflow-x: hidden;
@@ -461,7 +461,7 @@ button {
 
    .statisticErrorsContent {
     display: grid;
-    margin-top: 14px;
+    margin-top: 8px;
     min-height: 0;
     overflow-y: auto;
     overflow-x: hidden;
@@ -810,4 +810,73 @@ button {
 @keyframes chartSpin {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
+}
+
+/* =========================
+   Фильтры
+   ========================= */
+
+.linkedFilters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 12px 0 16px;
+}
+
+.linkedFilterItem {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    max-width: 100%;
+    padding: 8px 12px;
+    background: var(--bg-card);
+    border: 1px solid var(--panel-border);
+    border-radius: 10px;
+    box-shadow: var(--shadow-soft);
+    font-size: 14px;
+    line-height: 1.35;
+    color: var(--text-main);
+}
+
+.linkedFilterItem span {
+    display: inline;
+    font-size: 14px;
+    line-height: 1.35;
+    color: var(--text-main);
+}
+
+.linkedFilterItem strong {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-title);
+}
+
+.clearLinkedFilterButton {
+    min-height: 32px;
+    padding: 0 12px;
+    border-radius: 10px;
+    font-size: 13px;
+    white-space: nowrap;
+    box-shadow: none;
+    flex-shrink: 0;
+}
+
+.tableLinkButton {
+    width: 100%;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
+.tableLinkButton:hover {
+    text-decoration: underline;
+}
+
+.tableLinkButton.activeLink {
+    font-weight: 500;
+    color: var(--button-active-main);
 }

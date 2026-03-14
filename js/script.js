@@ -8,6 +8,8 @@ var dateTimeExtended = "today";
 var startExtended, endExtended;
 var extendedStaticticType = "emdErrors";
 let notificationTimer = null;
+let selectedMedDocumentType = "";
+let selectedErrorMessage = "";
 
 let listLpuId = {
     main:     "",
@@ -31,6 +33,7 @@ function startTnitialization(){
     activatingButton("typeData", typeStatistic, "selectedSecond");
     activatingButton("dateTime", dateTimeLight, "selectedSecond");
 
+    renderLinkedFilters();
     openLPUStatistic("main");
 }
 
@@ -49,6 +52,7 @@ function openLPUStatistic(id){
 
     LPU = id;
     idLpu = listLpuId[LPU];
+    resetLinkedSelections();
 
     activatingButton("sideNav", id, "selectedMain");
       
@@ -115,18 +119,21 @@ function updateEmdErrors() {
 
     document.querySelectorAll(".dataKash tbody tr").forEach(elem => {
         elem.remove();
-    })
+    });
 
-    let url = `${globalUrl}/main/emdErrors?organization=${idLpu}&start=${encodeURIComponent(startExtended.toISOString())}&end=${encodeURIComponent(endExtended.toISOString())}`;
+    let url = `${globalUrl}/main/emdErrorsLinked?${buildExtendedQuery({
+        errorMessage: selectedErrorMessage
+    })}`;
 
     fetch(url)
-        .then(response => {return response.json()})
+        .then(response => response.json())
         .then(commits => {
-            for (let i = 0; i < commits.length; i++){
-                
-                let table = document.querySelector(".dataKash tbody");
+            let table = document.querySelector(".dataKash tbody");
+
+            for (let i = 0; i < commits.length; i++) {
+
                 let lineTable = document.createElement("tr");
-                
+
                 let medDocumentType = document.createElement("td");
                 let count = document.createElement("td");
                 let countErrors = document.createElement("td");
@@ -134,8 +141,29 @@ function updateEmdErrors() {
                 let s3 = document.createElement("td");
                 let s5 = document.createElement("td");
 
-                medDocumentType.textContent = commits[i].medDocumentType;
-                
+                const currentMedDocumentType = commits[i].medDocumentType;
+
+                const medDocumentButton = document.createElement("button");
+                medDocumentButton.type = "button";
+                medDocumentButton.className = "tableLinkButton";
+                medDocumentButton.textContent = currentMedDocumentType;
+
+                if (selectedMedDocumentType === currentMedDocumentType) {
+                    medDocumentButton.classList.add("activeLink");
+                }
+
+                medDocumentButton.addEventListener("click", function(event) {
+                    event.preventDefault();
+
+                    selectedMedDocumentType =
+                        selectedMedDocumentType === currentMedDocumentType ? "" : currentMedDocumentType;
+
+                    renderLinkedFilters();
+                    updateErrors("statisticErrors");
+                });
+
+                medDocumentType.appendChild(medDocumentButton);
+
                 count.innerHTML = `<span class="badge-all-errors">${commits[i].count}</span>`;
                 countErrors.innerHTML = `<span class="${commits[i].countErrors == 0 ? 'badge-zero' : 'badge-errors'}">${commits[i].countErrors}</span>`;
                 s2.innerHTML = `<span class="${commits[i].s2 == 0 ? 'badge-zero' : 'badge-s2'}">${commits[i].s2}</span>`;
@@ -150,40 +178,64 @@ function updateEmdErrors() {
                 lineTable.appendChild(s5);
 
                 table.appendChild(lineTable);
-            }                
+            }
         })
         .catch(err => {
             alert('Произошла ошибка при загрузке данных');
             console.error(err);
-        });    
+        });
 }
 
-function updateStatisticErrors(){
+function updateStatisticErrors() {
     document.querySelectorAll(".dataKashErrors tbody tr").forEach(elem => {
         elem.remove();
-    })
+    });
 
-    let url = `${globalUrl}/main/statisticErrors?organization=${idLpu}&start=${encodeURIComponent(startExtended.toISOString())}&end=${encodeURIComponent(endExtended.toISOString())}`;
+    let url = `${globalUrl}/main/statisticErrorsLinked?${buildExtendedQuery({
+        medDocumentType: selectedMedDocumentType
+    })}`;
 
     fetch(url)
-        .then(response => {return response.json()})
+        .then(response => response.json())
         .then(commits => {
-            for (let i = 0; i < commits.length; i++){
-                
-                let table = document.querySelector(".dataKashErrors tbody");
+            let table = document.querySelector(".dataKashErrors tbody");
+
+            for (let i = 0; i < commits.length; i++) {
+
                 let lineTable = document.createElement("tr");
-                
+
                 let error = document.createElement("td");
                 let count = document.createElement("td");
 
-                error.textContent = commits[i].message;
+                const currentErrorMessage = commits[i].message;
+
+                const errorButton = document.createElement("button");
+                errorButton.type = "button";
+                errorButton.className = "tableLinkButton";
+                errorButton.textContent = currentErrorMessage;
+
+                if (selectedErrorMessage === currentErrorMessage) {
+                    errorButton.classList.add("activeLink");
+                }
+
+                errorButton.addEventListener("click", function(event) {
+                    event.preventDefault();
+
+                    selectedErrorMessage =
+                        selectedErrorMessage === currentErrorMessage ? "" : currentErrorMessage;
+
+                    renderLinkedFilters();
+                    updateErrors("emdErrors");
+                });
+
+                error.appendChild(errorButton);
                 count.innerHTML = `<span class="badge-count">${commits[i].count}</span>`;
 
                 lineTable.appendChild(error);
                 lineTable.appendChild(count);
 
                 table.appendChild(lineTable);
-            }                
+            }
         })
         .catch(err => {
             alert('Произошла ошибка при загрузке данных');
@@ -492,6 +544,11 @@ function applyCustomDateRange(options = {}) {
     }
 
     activatingButton("dateTime", "anotherDate", "selectedSecond");
+
+    if (typeStatistic === "extendedStatictic") {
+        resetLinkedSelections();
+    }
+
     updateStatisticContent();
 
     return true;
@@ -539,6 +596,55 @@ function showNotification(text) {
     }, 3000);
 }
 
+function buildExtendedQuery(extra = {}) {
+    const params = new URLSearchParams({
+        organization: idLpu,
+        start: startExtended.toISOString(),
+        end: endExtended.toISOString()
+    });
+
+    Object.entries(extra).forEach(([key, value]) => {
+        if (value !== "") {
+            params.append(key, value);
+        }
+    });
+
+    return params.toString();
+}
+
+function renderLinkedFilters() {
+    const wrapper = document.getElementById("linkedFilters");
+    const medBlock = document.getElementById("medDocumentFilter");
+    const errorBlock = document.getElementById("errorFilter");
+
+    if (selectedMedDocumentType) {
+        document.getElementById("medDocumentFilterText").textContent = selectedMedDocumentType;
+        medBlock.style.display = "flex";
+    } else {
+        medBlock.style.display = "none";
+    }
+
+    if (selectedErrorMessage) {
+        document.getElementById("errorFilterText").textContent = selectedErrorMessage;
+        errorBlock.style.display = "flex";
+    } else {
+        errorBlock.style.display = "none";
+    }
+
+    wrapper.style.display = (selectedMedDocumentType || selectedErrorMessage) ? "flex" : "none";
+}
+
+function resetLinkedSelections() {
+    selectedMedDocumentType = "";
+    selectedErrorMessage = "";
+    renderLinkedFilters();
+}
+
+function refreshExtendedTables() {
+    updateEmdErrors();
+    updateStatisticErrors();
+}
+
 document.getElementById("lightStatictic")
     .addEventListener("click", function(event) {
         event.preventDefault();
@@ -584,6 +690,11 @@ document.querySelectorAll(".dateTime .subButton").forEach(function(elem){
         }
 
         closeCustomDatePanel();
+       
+        if (typeStatistic == "extendedStatictic") {
+            resetLinkedSelections();
+        }
+
         updateStatisticContent(id);
     });
 });
@@ -634,3 +745,19 @@ document.addEventListener("click", function(event) {
         }
     }
 });
+
+document.getElementById("clearMedDocumentFilter")
+    .addEventListener("click", function(event) {
+        event.preventDefault();
+        selectedMedDocumentType = "";
+        renderLinkedFilters();
+        refreshExtendedTables();
+    });
+
+document.getElementById("clearErrorFilter")
+    .addEventListener("click", function(event) {
+        event.preventDefault();
+        selectedErrorMessage = "";
+        renderLinkedFilters();
+        refreshExtendedTables();
+    });
