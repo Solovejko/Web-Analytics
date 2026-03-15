@@ -43,8 +43,7 @@ let listLpuId = {
 
 startTnitialization();
 
-function startTnitialization(){
-
+function startTnitialization() {
     activatingButton("typeData", typeStatistic, "selectedSecond");
     activatingButton("dateTime", dateTimeLight, "selectedSecond");
 
@@ -52,16 +51,15 @@ function startTnitialization(){
     openLPUStatistic("main");
 }
 
-function activatingButton(classParent, id, nameClass){
-    document.querySelectorAll("." + classParent + " button").forEach(function(elem){
-        elem.classList.remove(nameClass);    
+function activatingButton(classParent, id, nameClass) {
+    document.querySelectorAll("." + classParent + " button").forEach(function(elem) {
+        elem.classList.remove(nameClass);
     });
 
-    document.getElementById(id).classList.add(nameClass);    
+    document.getElementById(id).classList.add(nameClass);
 }
 
-function openLPUStatistic(id){
-
+function openLPUStatistic(id) {
     if (id == LPU)
         return;
 
@@ -72,17 +70,16 @@ function openLPUStatistic(id){
     resetDetailSelection();
 
     activatingButton("sideNav", id, "selectedMain");
-      
+
     updateStatisticContent();
 
     if (typeStatistic == "lightStatictic")
         updateErrors();
     else
-        updateLightStatisticContent(); 
+        updateLightStatisticContent();
 }
 
-function loadCanvas(data){
-
+function loadCanvas(data) {
     const canvas = document.getElementById("statisticChart");
     const ctx = canvas.getContext("2d");
 
@@ -124,11 +121,11 @@ function loadCanvas(data){
     });
 }
 
-function showChartLoader(){
+function showChartLoader() {
     document.getElementById("chartLoader").style.display = "grid";
 }
 
-function hideChartLoader(){
+function hideChartLoader() {
     document.getElementById("chartLoader").style.display = "none";
 }
 
@@ -158,7 +155,6 @@ function createErrorCountButton(value, errorMessage) {
 
     button.addEventListener("click", function(event) {
         event.preventDefault();
-
         openErrorDetailTable(errorMessage);
     });
 
@@ -380,12 +376,12 @@ function updateStatisticErrors() {
         });
 }
 
-function clearLightStatistic(){
+function clearLightStatistic() {
     clearCanvas();
-    clearLegend();    
+    clearLegend();
 }
 
-function clearLegend(){
+function clearLegend() {
     let s0 = document.querySelector(".s0 .row");
     s0.style.setProperty("--p", 0);
     s0.querySelector(".bar").textContent = "0 (0%)";
@@ -411,7 +407,7 @@ function clearLegend(){
     s5.querySelector(".bar").textContent = "0 (0%)";
 }
 
-function clearCanvas(){
+function clearCanvas() {
     const canvas = document.getElementById("statisticChart");
     const ctx = canvas.getContext("2d");
 
@@ -534,10 +530,9 @@ function subtractMonthSafe(date) {
     return new Date(year, month, safeDay, d.getHours(), d.getMinutes(), d.getSeconds(), d.getMilliseconds());
 }
 
-function updateStatisticContent(id = ""){
-
-    if (id != ""){
-        if (typeStatistic == "lightStatictic"){
+function updateStatisticContent(id = "") {
+    if (id != "") {
+        if (typeStatistic == "lightStatictic") {
             dateTimeLight = id;
             activatingButton("dateTime", dateTimeLight, "selectedSecond");
 
@@ -557,13 +552,13 @@ function updateStatisticContent(id = ""){
             }
         }
     } else {
-        if (dateTimeLight !== "anotherDate"){
+        if (dateTimeLight !== "anotherDate") {
             const dateRange = updateDate(dateTimeLight);
             startLight = dateRange[0];
             endLight = dateRange[1];
         }
 
-        if (dateTimeExtended !== "anotherDate"){
+        if (dateTimeExtended !== "anotherDate") {
             const dateRange = updateDate(dateTimeExtended);
             startExtended = dateRange[0];
             endExtended = dateRange[1];
@@ -579,46 +574,46 @@ function updateStatisticContent(id = ""){
     abortControllerSafe(statisticErrorsController);
 
     if (typeStatistic == "lightStatictic")
-        updateLightStatisticContent(); 
+        updateLightStatisticContent();
     else
         updateErrors();
 }
 
-function updateDate(dateTime){
+function updateDate(dateTime) {
     const now = new Date();
     let start = new Date(now);
     let end = new Date(now);
 
-    if (dateTime == "today"){
-        start.setHours(0,0,0,0);
-        end.setHours(23,59,59,999);
+    if (dateTime == "today") {
+        start.setHours(0, 0, 0, 0);
+        end.setHours(23, 59, 59, 999);
     }
 
-    if (dateTime == "yesterday"){
+    if (dateTime == "yesterday") {
         start.setDate(start.getDate() - 1);
         end.setDate(end.getDate() - 1);
 
-        start.setHours(0,0,0,0);
-        end.setHours(23,59,59,999);
+        start.setHours(0, 0, 0, 0);
+        end.setHours(23, 59, 59, 999);
     }
 
-    if (dateTime == "week"){
+    if (dateTime == "week") {
         start.setDate(start.getDate() - 7);
-        start.setHours(0,0,0,0);
-        end.setHours(23,59,59,999);
+        start.setHours(0, 0, 0, 0);
+        end.setHours(23, 59, 59, 999);
     }
 
-    if (dateTime == "month"){
+    if (dateTime == "month") {
         start = subtractMonthSafe(now);
-        start.setHours(0,0,0,0);
+        start.setHours(0, 0, 0, 0);
 
-        end.setHours(23,59,59,999);
+        end.setHours(23, 59, 59, 999);
     }
 
     return [start, end];
 }
 
-function openLightStatistic(){
+function openLightStatistic() {
     document.querySelector(".lightStaticticContent").style.display = "grid";
     document.querySelector(".extendedStaticticContent").style.display = "none";
 
@@ -629,7 +624,7 @@ function openLightStatistic(){
     resetDetailSelection();
 }
 
-function openExtendedStatictic(){
+function openExtendedStatictic() {
     document.querySelector(".lightStaticticContent").style.display = "none";
     document.querySelector(".extendedStaticticContent").style.display = "grid";
 
@@ -641,9 +636,8 @@ function openExtendedStatictic(){
     activatingButton("extendedStaticticType", extendedStaticticType, "selectedSecond");
 }
 
-function updateErrors(id = ""){
-
-    if (id != ""){
+function updateErrors(id = "") {
+    if (id != "") {
         extendedStaticticType = id;
         activatingButton("extendedStaticticType", extendedStaticticType, "selectedSecond");
         resetDetailSelection();
@@ -651,16 +645,16 @@ function updateErrors(id = ""){
 
     renderLinkedFilters();
 
-    if (extendedStaticticType == "emdErrors"){
+    if (extendedStaticticType == "emdErrors") {
         document.querySelector(".emdErrorsContent").style.display = "grid";
         document.querySelector(".statisticErrorsContent").style.display = "none";
         updateEmdErrors();
     }
- 
-    if (extendedStaticticType == "statisticErrors"){    
+
+    if (extendedStaticticType == "statisticErrors") {
         document.querySelector(".emdErrorsContent").style.display = "none";
         document.querySelector(".statisticErrorsContent").style.display = "grid";
-        updateStatisticErrors();     
+        updateStatisticErrors();
     }
 }
 
@@ -863,6 +857,8 @@ function hideDetailTable() {
     if (paginationInfo) {
         paginationInfo.textContent = "Показано 0–0 из 0";
     }
+
+    setDetailPaginationLoadingState(false);
 }
 
 function abortAllDataRequests() {
@@ -882,8 +878,68 @@ function updateDetailPaginationControls() {
 
     paginationInfo.textContent = `Показано ${from}–${to} из ${detailTotal}`;
 
-    prevButton.disabled = detailOffset === 0;
-    nextButton.disabled = detailOffset + detailPageSize >= detailTotal;
+    prevButton.disabled = detailOffset === 0 || detailTotal === 0;
+    nextButton.disabled = detailTotal === 0 || detailOffset + detailPageSize >= detailTotal;
+}
+
+function setDetailPaginationLoadingState(isLoading) {
+    const prevButton = document.getElementById("detailPrevPage");
+    const nextButton = document.getElementById("detailNextPage");
+
+    prevButton.disabled = isLoading || detailOffset === 0 || detailTotal === 0;
+    nextButton.disabled = isLoading || detailTotal === 0 || detailOffset + detailPageSize >= detailTotal;
+}
+
+function showDetailTableLoading(titleText) {
+    const overlay = document.getElementById("detailModalOverlay");
+    const body = document.getElementById("detailTableBody");
+    const title = document.getElementById("detailTitle");
+
+    title.textContent = titleText || "Список отправок";
+    body.innerHTML = "";
+
+    const tr = document.createElement("tr");
+    const td = document.createElement("td");
+
+    td.colSpan = 6;
+    td.textContent = "Загрузка данных...";
+    td.style.textAlign = "center";
+    td.style.padding = "24px 16px";
+
+    tr.appendChild(td);
+    body.appendChild(tr);
+
+    overlay.style.display = "flex";
+
+    detailTotal = 0;
+    setDetailPaginationLoadingState(true);
+    updateDetailPaginationControls();
+}
+
+function showDetailTableError(titleText, messageText) {
+    const overlay = document.getElementById("detailModalOverlay");
+    const body = document.getElementById("detailTableBody");
+    const title = document.getElementById("detailTitle");
+
+    title.textContent = titleText || "Список отправок";
+    body.innerHTML = "";
+
+    const tr = document.createElement("tr");
+    const td = document.createElement("td");
+
+    td.colSpan = 6;
+    td.textContent = messageText || "Не удалось загрузить данные";
+    td.style.textAlign = "center";
+    td.style.padding = "24px 16px";
+
+    tr.appendChild(td);
+    body.appendChild(tr);
+
+    overlay.style.display = "flex";
+
+    detailTotal = 0;
+    setDetailPaginationLoadingState(false);
+    updateDetailPaginationControls();
 }
 
 function getStatusTitle(statusFilter) {
@@ -954,7 +1010,6 @@ function formatDateTime(value) {
 
 function updateEmdErrorDetails() {
     const body = document.getElementById("detailTableBody");
-    const overlay = document.getElementById("detailModalOverlay");
 
     body.innerHTML = "";
 
@@ -1007,7 +1062,7 @@ function updateEmdErrorDetails() {
         };
     }
 
-    document.getElementById("detailTitle").textContent = titleText;
+    showDetailTableLoading(titleText);
 
     const params = new URLSearchParams({
         organization: idLpu,
@@ -1043,6 +1098,23 @@ function updateEmdErrorDetails() {
             detailTotal = Number(result.total) || 0;
             detailOffset = Number(result.offset) || 0;
 
+            if (rows.length === 0) {
+                const tr = document.createElement("tr");
+                const td = document.createElement("td");
+
+                td.colSpan = 6;
+                td.textContent = "Нет данных для отображения";
+                td.style.textAlign = "center";
+                td.style.padding = "24px 16px";
+
+                tr.appendChild(td);
+                body.appendChild(tr);
+
+                setDetailPaginationLoadingState(false);
+                updateDetailPaginationControls();
+                return;
+            }
+
             for (let i = 0; i < rows.length; i++) {
                 const tr = document.createElement("tr");
 
@@ -1070,7 +1142,7 @@ function updateEmdErrorDetails() {
                 body.appendChild(tr);
             }
 
-            overlay.style.display = "flex";
+            setDetailPaginationLoadingState(false);
             updateDetailPaginationControls();
         })
         .catch(err => {
@@ -1078,9 +1150,8 @@ function updateEmdErrorDetails() {
                 return;
             }
 
-            hideDetailTable();
-            showNotification("Произошла ошибка при загрузке списка отправок");
             console.error(err);
+            showDetailTableError(titleText, "Произошла ошибка при загрузке списка отправок");
         });
 }
 
@@ -1096,14 +1167,14 @@ document.getElementById("extendedStatictic")
         openExtendedStatictic();
     });
 
-document.querySelectorAll(".extendedStaticticType .subButton").forEach(function(elem){
-     elem.addEventListener("click", function(event) {
+document.querySelectorAll(".extendedStaticticType .subButton").forEach(function(elem) {
+    elem.addEventListener("click", function(event) {
         event.preventDefault();
         updateErrors(event.target.getAttribute("id"));
     });
 });
 
-document.querySelectorAll(".dateTime .subButton").forEach(function(elem){
+document.querySelectorAll(".dateTime .subButton").forEach(function(elem) {
     elem.addEventListener("click", function(event) {
         event.preventDefault();
 
@@ -1129,7 +1200,7 @@ document.querySelectorAll(".dateTime .subButton").forEach(function(elem){
         }
 
         closeCustomDatePanel();
-       
+
         if (typeStatistic == "extendedStatictic") {
             resetLinkedSelections();
             resetDetailSelection();
@@ -1154,8 +1225,8 @@ document.getElementById("cancelCustomDate")
         closeCustomDatePanel();
     });
 
-document.querySelectorAll(".sideNav .sideNavButton").forEach(function(elem){
-     elem.addEventListener("click", function(event) {
+document.querySelectorAll(".sideNav .sideNavButton").forEach(function(elem) {
+    elem.addEventListener("click", function(event) {
         event.preventDefault();
         openLPUStatistic(event.target.getAttribute("id"));
     });
