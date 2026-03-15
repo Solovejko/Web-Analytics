@@ -173,8 +173,19 @@
         <div class="detailModalOverlay" id="detailModalOverlay" style="display: none;">
             <div class="detailModal" id="detailModal">
                 <div class="detailHeader">
-                    <div class="detailTitle" id="detailTitle">Список отправок</div>
-                    <button class="subButton" id="closeDetailTable">Закрыть</button>
+                    <div class="detailHeaderLeft">
+                        <div class="detailTitle" id="detailTitle">Список отправок</div>
+
+                        <div class="detailPaginationInfo" id="detailPaginationInfo">
+                            Показано 0–0 из 0
+                        </div>
+                    </div>
+
+                    <div class="detailHeaderRight">
+                        <button class="subButton" id="detailPrevPage">Назад</button>
+                        <button class="subButton" id="detailNextPage">Вперед</button>
+                        <button class="subButton" id="closeDetailTable">Закрыть</button>
+                    </div>
                 </div>
 
                 <div class="detailTableWrap">

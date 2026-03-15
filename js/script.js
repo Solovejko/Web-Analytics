@@ -1,4 +1,4 @@
-const globalUrl = "http://94.19.80.148:3000";
+const globalUrl = "http://solovejko.sknt.ru:3000";
 var LPU = "";
 var idLpu = "";
 var typeStatistic = "lightStatictic";
@@ -16,6 +16,10 @@ let detailStatusFilter = "";
 let detailColumnType = "";
 let detailErrorMessage = "";
 let detailSourceType = "";
+
+let detailPageSize = 100;
+let detailOffset = 0;
+let detailTotal = 0;
 
 let listLpuId = {
     main:     "",
@@ -762,6 +766,10 @@ function resetDetailSelection() {
     detailColumnType = "";
     detailErrorMessage = "";
     detailSourceType = "";
+
+    detailOffset = 0;
+    detailTotal = 0;
+
     hideDetailTable();
 }
 
@@ -769,6 +777,7 @@ function hideDetailTable() {
     const overlay = document.getElementById("detailModalOverlay");
     const body = document.getElementById("detailTableBody");
     const title = document.getElementById("detailTitle");
+    const paginationInfo = document.getElementById("detailPaginationInfo");
 
     if (overlay) {
         overlay.style.display = "none";
@@ -781,6 +790,24 @@ function hideDetailTable() {
     if (title) {
         title.textContent = "Список отправок";
     }
+
+    if (paginationInfo) {
+        paginationInfo.textContent = "Показано 0–0 из 0";
+    }
+}
+
+function updateDetailPaginationControls() {
+    const prevButton = document.getElementById("detailPrevPage");
+    const nextButton = document.getElementById("detailNextPage");
+    const paginationInfo = document.getElementById("detailPaginationInfo");
+
+    const from = detailTotal === 0 ? 0 : detailOffset + 1;
+    const to = Math.min(detailOffset + detailPageSize, detailTotal);
+
+    paginationInfo.textContent = `Показано ${from}–${to} из ${detailTotal}`;
+
+    prevButton.disabled = detailOffset === 0;
+    nextButton.disabled = detailOffset + detailPageSize >= detailTotal;
 }
 
 function getStatusTitle(statusFilter) {
@@ -810,6 +837,7 @@ function openDetailTable(medDocumentType, statusFilter, columnType) {
     detailStatusFilter = statusFilter;
     detailColumnType = columnType;
     detailErrorMessage = selectedErrorMessage;
+    detailOffset = 0;
 
     updateEmdErrorDetails();
 }
@@ -831,6 +859,7 @@ function openErrorDetailTable(errorMessage) {
     detailMedDocumentType = selectedMedDocumentType;
     detailStatusFilter = "";
     detailColumnType = "";
+    detailOffset = 0;
 
     updateEmdErrorDetails();
 }
@@ -904,14 +933,38 @@ function updateEmdErrorDetails() {
 
     document.getElementById("detailTitle").textContent = titleText;
 
-    let url = `${globalUrl}/main/emdErrorDetails?${buildExtendedQuery(query)}`;
+    const params = new URLSearchParams({
+        organization: idLpu,
+        start: startExtended.toISOString(),
+        end: endExtended.toISOString(),
+        limit: detailPageSize,
+        offset: detailOffset
+    });
+
+    Object.entries(query).forEach(([key, value]) => {
+        if (value !== "") {
+            params.append(key, value);
+        }
+    });
+
+    const url = `${globalUrl}/main/emdErrorDetails?${params.toString()}`;
 
     fetch(url)
-        .then(response => response.json())
-        .then(commits => {
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+
+            return response.json();
+        })
+        .then(result => {
             body.innerHTML = "";
 
-            for (let i = 0; i < commits.length; i++) {
+            const rows = Array.isArray(result.rows) ? result.rows : [];
+            detailTotal = Number(result.total) || 0;
+            detailOffset = Number(result.offset) || 0;
+
+            for (let i = 0; i < rows.length; i++) {
                 const tr = document.createElement("tr");
 
                 const tdIdDocument = document.createElement("td");
@@ -921,12 +974,12 @@ function updateEmdErrorDetails() {
                 const tdStatus = document.createElement("td");
                 const tdMessage = document.createElement("td");
 
-                tdIdDocument.textContent = commits[i].idDocumentMis || "";
-                tdIdMis.textContent = commits[i].idMis || "";
-                tdCreationDate.textContent = formatDateTime(commits[i].creationDate);
-                tdLastAttemptDate.textContent = formatDateTime(commits[i].lastAttemptDate);
-                tdStatus.textContent = commits[i].currentStatus;
-                tdMessage.textContent = commits[i].message || "";
+                tdIdDocument.textContent = rows[i].idDocumentMis || "";
+                tdIdMis.textContent = rows[i].idMis || "";
+                tdCreationDate.textContent = formatDateTime(rows[i].creationDate);
+                tdLastAttemptDate.textContent = formatDateTime(rows[i].lastAttemptDate);
+                tdStatus.textContent = rows[i].currentStatus;
+                tdMessage.textContent = rows[i].message || "";
 
                 tr.appendChild(tdIdDocument);
                 tr.appendChild(tdIdMis);
@@ -939,9 +992,7 @@ function updateEmdErrorDetails() {
             }
 
             overlay.style.display = "flex";
-
-            updateEmdErrors();
-            updateStatisticErrors();
+            updateDetailPaginationControls();
         })
         .catch(err => {
             hideDetailTable();
@@ -1085,4 +1136,28 @@ document.getElementById("detailModalOverlay")
             updateEmdErrors();
             updateStatisticErrors();
         }
+    });
+
+document.getElementById("detailPrevPage")
+    .addEventListener("click", function(event) {
+        event.preventDefault();
+
+        if (detailOffset === 0) {
+            return;
+        }
+
+        detailOffset = Math.max(0, detailOffset - detailPageSize);
+        updateEmdErrorDetails();
+    });
+
+document.getElementById("detailNextPage")
+    .addEventListener("click", function(event) {
+        event.preventDefault();
+
+        if (detailOffset + detailPageSize >= detailTotal) {
+            return;
+        }
+
+        detailOffset += detailPageSize;
+        updateEmdErrorDetails();
     });
