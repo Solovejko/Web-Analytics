@@ -21,6 +21,11 @@ let detailPageSize = 100;
 let detailOffset = 0;
 let detailTotal = 0;
 
+let lightStatisticController = null;
+let emdErrorsController = null;
+let statisticErrorsController = null;
+let emdErrorDetailsController = null;
+
 let listLpuId = {
     main:     "",
     kash:     "1.2.643.5.1.13.13.12.2.78.8575",
@@ -62,6 +67,7 @@ function openLPUStatistic(id){
 
     LPU = id;
     idLpu = listLpuId[LPU];
+    abortAllDataRequests();
     resetLinkedSelections();
     resetDetailSelection();
 
@@ -126,6 +132,16 @@ function hideChartLoader(){
     document.getElementById("chartLoader").style.display = "none";
 }
 
+function abortControllerSafe(controller) {
+    if (controller) {
+        controller.abort();
+    }
+}
+
+function isAbortError(err) {
+    return err && err.name === "AbortError";
+}
+
 function createErrorCountButton(value, errorMessage) {
     const button = document.createElement("button");
     button.type = "button";
@@ -181,22 +197,29 @@ function createDetailCountButton(value, className, medDocumentType, statusFilter
 }
 
 function updateEmdErrors() {
-
     document.querySelectorAll(".dataKash tbody tr").forEach(elem => {
         elem.remove();
     });
+
+    abortControllerSafe(emdErrorsController);
+    emdErrorsController = new AbortController();
 
     let url = `${globalUrl}/main/emdErrorsLinked?${buildExtendedQuery({
         errorMessage: selectedErrorMessage
     })}`;
 
-    fetch(url)
-        .then(response => response.json())
+    fetch(url, { signal: emdErrorsController.signal })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+
+            return response.json();
+        })
         .then(commits => {
             let table = document.querySelector(".dataKash tbody");
 
             for (let i = 0; i < commits.length; i++) {
-
                 let lineTable = document.createElement("tr");
 
                 let medDocumentType = document.createElement("td");
@@ -275,6 +298,10 @@ function updateEmdErrors() {
             }
         })
         .catch(err => {
+            if (isAbortError(err)) {
+                return;
+            }
+
             alert('Произошла ошибка при загрузке данных');
             console.error(err);
         });
@@ -285,17 +312,25 @@ function updateStatisticErrors() {
         elem.remove();
     });
 
+    abortControllerSafe(statisticErrorsController);
+    statisticErrorsController = new AbortController();
+
     let url = `${globalUrl}/main/statisticErrorsLinked?${buildExtendedQuery({
         medDocumentType: selectedMedDocumentType
     })}`;
 
-    fetch(url)
-        .then(response => response.json())
+    fetch(url, { signal: statisticErrorsController.signal })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+
+            return response.json();
+        })
         .then(commits => {
             let table = document.querySelector(".dataKashErrors tbody");
 
             for (let i = 0; i < commits.length; i++) {
-
                 let lineTable = document.createElement("tr");
 
                 let error = document.createElement("td");
@@ -336,6 +371,10 @@ function updateStatisticErrors() {
             }
         })
         .catch(err => {
+            if (isAbortError(err)) {
+                return;
+            }
+
             alert('Произошла ошибка при загрузке данных');
             console.error(err);
         });
@@ -398,63 +437,87 @@ function clearCanvas(){
     ctx.stroke();
 }
 
-function updateLightStatisticContent(){
-
+function updateLightStatisticContent() {
     clearLightStatistic();
-    showChartLoader(); 
+    showChartLoader();
 
-    let url = `${globalUrl}/main/lightStatistic?organization=${idLpu}&start=${encodeURIComponent(startLight.toISOString())}&end=${encodeURIComponent(endLight.toISOString())}`;
+    abortControllerSafe(lightStatisticController);
+    lightStatisticController = new AbortController();
 
-    fetch(url)
-        .then(response => {return response.json()})
+    const url = `${globalUrl}/main/lightStatistic?organization=${idLpu}&start=${encodeURIComponent(startLight.toISOString())}&end=${encodeURIComponent(endLight.toISOString())}`;
+
+    fetch(url, { signal: lightStatisticController.signal })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+
+            return response.json();
+        })
         .then(commits => {
-   
-            if (commits.length == 1){
-                var data = [
-                    { value: commits[0].s0 / commits[0].count * 100, color: "#969696" },
-                    { value: commits[0].s1 / commits[0].count * 100, color: "#00ABD3" },
-                    { value: commits[0].s2 / commits[0].count * 100, color: "#F47521" },
-                    { value: commits[0].s3 / commits[0].count * 100, color: "#338AA9" },
-                    { value: commits[0].s4 / commits[0].count * 100, color: "#00A78E" },
-                    { value: commits[0].s5 / commits[0].count * 100, color: "#976A65" }
-                ];
-            } else {
+            if (commits.length !== 1) {
                 hideChartLoader();
                 return;
             }
 
+            const totalCount = Number(commits[0].count) || 0;
+
+            if (totalCount <= 0) {
+                hideChartLoader();
+                clearLightStatistic();
+                return;
+            }
+
+            const data = [
+                { value: commits[0].s0 / totalCount * 100, color: "#969696" },
+                { value: commits[0].s1 / totalCount * 100, color: "#00ABD3" },
+                { value: commits[0].s2 / totalCount * 100, color: "#F47521" },
+                { value: commits[0].s3 / totalCount * 100, color: "#338AA9" },
+                { value: commits[0].s4 / totalCount * 100, color: "#00A78E" },
+                { value: commits[0].s5 / totalCount * 100, color: "#976A65" }
+            ];
+
             let s0 = document.querySelector(".s0 .row");
             s0.style.setProperty("--p", data[0].value);
-            s0.querySelector(".bar").textContent = commits[0].s0 + " (" + (data[0].value.toFixed(2) < 1? "<1": data[0].value.toFixed(2)) + "%)";
+            s0.querySelector(".bar").textContent = commits[0].s0 + " (" + (data[0].value.toFixed(2) < 1 ? "<1" : data[0].value.toFixed(2)) + "%)";
 
             let s1 = document.querySelector(".s1 .row");
             s1.style.setProperty("--p", data[1].value);
-            s1.querySelector(".bar").textContent = commits[0].s1 + " (" + (data[1].value.toFixed(2) < 1? "<1": data[1].value.toFixed(2)) + "%)";
+            s1.querySelector(".bar").textContent = commits[0].s1 + " (" + (data[1].value.toFixed(2) < 1 ? "<1" : data[1].value.toFixed(2)) + "%)";
 
             let s2 = document.querySelector(".s2 .row");
             s2.style.setProperty("--p", data[2].value);
-            s2.querySelector(".bar").textContent = commits[0].s2 + " (" + (data[2].value.toFixed(2) < 1? "<1": data[2].value.toFixed(2)) + "%)";
+            s2.querySelector(".bar").textContent = commits[0].s2 + " (" + (data[2].value.toFixed(2) < 1 ? "<1" : data[2].value.toFixed(2)) + "%)";
 
             let s3 = document.querySelector(".s3 .row");
             s3.style.setProperty("--p", data[3].value);
-            s3.querySelector(".bar").textContent = commits[0].s3 + " (" + (data[3].value.toFixed(2) < 1? "<1": data[3].value.toFixed(2)) + "%)";
+            s3.querySelector(".bar").textContent = commits[0].s3 + " (" + (data[3].value.toFixed(2) < 1 ? "<1" : data[3].value.toFixed(2)) + "%)";
 
             let s4 = document.querySelector(".s4 .row");
             s4.style.setProperty("--p", data[4].value);
-            s4.querySelector(".bar").textContent = commits[0].s4 + " (" + (data[4].value.toFixed(2) < 1? "<1": data[4].value.toFixed(2)) + "%)";
+            s4.querySelector(".bar").textContent = commits[0].s4 + " (" + (data[4].value.toFixed(2) < 1 ? "<1" : data[4].value.toFixed(2)) + "%)";
 
             let s5 = document.querySelector(".s5 .row");
             s5.style.setProperty("--p", data[5].value);
-            s5.querySelector(".bar").textContent = commits[0].s5 + " (" + (data[5].value.toFixed(2) < 1? "<1": data[5].value.toFixed(2)) + "%)";
+            s5.querySelector(".bar").textContent = commits[0].s5 + " (" + (data[5].value.toFixed(2) < 1 ? "<1" : data[5].value.toFixed(2)) + "%)";
 
             hideChartLoader();
-            loadCanvas(data);             
+            loadCanvas(data);
         })
         .catch(err => {
+            if (isAbortError(err)) {
+                return;
+            }
+
             hideChartLoader();
             alert('Произошла ошибка при загрузке данных');
             console.error(err);
-        }); 
+        })
+        .finally(() => {
+            if (lightStatisticController && lightStatisticController.signal.aborted) {
+                return;
+            }
+        });
 }
 
 function subtractMonthSafe(date) {
@@ -510,6 +573,10 @@ function updateStatisticContent(id = ""){
     if (typeStatistic == "extendedStatictic") {
         resetDetailSelection();
     }
+
+    abortControllerSafe(lightStatisticController);
+    abortControllerSafe(emdErrorsController);
+    abortControllerSafe(statisticErrorsController);
 
     if (typeStatistic == "lightStatictic")
         updateLightStatisticContent(); 
@@ -770,6 +837,8 @@ function resetDetailSelection() {
     detailOffset = 0;
     detailTotal = 0;
 
+    abortControllerSafe(emdErrorDetailsController);
+
     hideDetailTable();
 }
 
@@ -794,6 +863,13 @@ function hideDetailTable() {
     if (paginationInfo) {
         paginationInfo.textContent = "Показано 0–0 из 0";
     }
+}
+
+function abortAllDataRequests() {
+    abortControllerSafe(lightStatisticController);
+    abortControllerSafe(emdErrorsController);
+    abortControllerSafe(statisticErrorsController);
+    abortControllerSafe(emdErrorDetailsController);
 }
 
 function updateDetailPaginationControls() {
@@ -949,7 +1025,10 @@ function updateEmdErrorDetails() {
 
     const url = `${globalUrl}/main/emdErrorDetails?${params.toString()}`;
 
-    fetch(url)
+    abortControllerSafe(emdErrorDetailsController);
+    emdErrorDetailsController = new AbortController();
+
+    fetch(url, { signal: emdErrorDetailsController.signal })
         .then(response => {
             if (!response.ok) {
                 throw new Error(`HTTP ${response.status}`);
@@ -995,6 +1074,10 @@ function updateEmdErrorDetails() {
             updateDetailPaginationControls();
         })
         .catch(err => {
+            if (isAbortError(err)) {
+                return;
+            }
+
             hideDetailTable();
             showNotification("Произошла ошибка при загрузке списка отправок");
             console.error(err);
