@@ -26,6 +26,8 @@ let emdErrorsController = null;
 let statisticErrorsController = null;
 let emdErrorDetailsController = null;
 
+let pageIsUnloading = false;
+
 let listLpuId = {
     main:     "",
     kash:     "1.2.643.5.1.13.13.12.2.78.8575",
@@ -129,6 +131,20 @@ function hideChartLoader() {
     document.getElementById("chartLoader").style.display = "none";
 }
 
+function showTableLoader(loaderId) {
+    const loader = document.getElementById(loaderId);
+    if (loader) {
+        loader.style.display = "grid";
+    }
+}
+
+function hideTableLoader(loaderId) {
+    const loader = document.getElementById(loaderId);
+    if (loader) {
+        loader.style.display = "none";
+    }
+}
+
 function abortControllerSafe(controller) {
     if (controller) {
         controller.abort();
@@ -137,6 +153,10 @@ function abortControllerSafe(controller) {
 
 function isAbortError(err) {
     return err && err.name === "AbortError";
+}
+
+function shouldIgnoreRequestError(err) {
+    return pageIsUnloading || isAbortError(err);
 }
 
 function createErrorCountButton(value, errorMessage) {
@@ -196,6 +216,8 @@ function updateEmdErrors() {
     document.querySelectorAll(".dataKash tbody tr").forEach(elem => {
         elem.remove();
     });
+
+    showTableLoader("emdErrorsLoader");
 
     abortControllerSafe(emdErrorsController);
     emdErrorsController = new AbortController();
@@ -294,12 +316,15 @@ function updateEmdErrors() {
             }
         })
         .catch(err => {
-            if (isAbortError(err)) {
+            if (shouldIgnoreRequestError(err)) {
                 return;
             }
 
             alert('Произошла ошибка при загрузке данных');
             console.error(err);
+        })
+        .finally(() => {
+            hideTableLoader("emdErrorsLoader");
         });
 }
 
@@ -307,6 +332,8 @@ function updateStatisticErrors() {
     document.querySelectorAll(".dataKashErrors tbody tr").forEach(elem => {
         elem.remove();
     });
+
+    showTableLoader("statisticErrorsLoader");
 
     abortControllerSafe(statisticErrorsController);
     statisticErrorsController = new AbortController();
@@ -367,12 +394,15 @@ function updateStatisticErrors() {
             }
         })
         .catch(err => {
-            if (isAbortError(err)) {
+            if (shouldIgnoreRequestError(err)) {
                 return;
             }
 
             alert('Произошла ошибка при загрузке данных');
             console.error(err);
+        })
+        .finally(() => {
+            hideTableLoader("statisticErrorsLoader");
         });
 }
 
@@ -501,7 +531,8 @@ function updateLightStatisticContent() {
             loadCanvas(data);
         })
         .catch(err => {
-            if (isAbortError(err)) {
+            if (shouldIgnoreRequestError(err)) {
+                hideChartLoader();
                 return;
             }
 
@@ -1146,7 +1177,7 @@ function updateEmdErrorDetails() {
             updateDetailPaginationControls();
         })
         .catch(err => {
-            if (isAbortError(err)) {
+            if (shouldIgnoreRequestError(err)) {
                 return;
             }
 
@@ -1315,3 +1346,8 @@ document.getElementById("detailNextPage")
         detailOffset += detailPageSize;
         updateEmdErrorDetails();
     });
+
+window.addEventListener("beforeunload", function() {
+    pageIsUnloading = true;
+    abortAllDataRequests();
+});
