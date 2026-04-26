@@ -41,6 +41,19 @@ let listLpuId = {
     beht:     "1.2.643.5.1.13.13.12.2.78.8807"
 };
 
+let listLpuName = {
+    main: "Главная",
+    kash: "Кащенко",
+    chud: "Чуды",
+    plk114: "Полки 114",
+    gpb: "ГПБ №6",
+    plk81: "Полка 81",
+    kdp: "КДП №1",
+    pndr: "ПНДР",
+    stepmed: "Степмед",
+    beht: "Бехтерева"
+};
+
 startTnitialization();
 
 function startTnitialization() {
@@ -52,11 +65,15 @@ function startTnitialization() {
 }
 
 function activatingButton(classParent, id, nameClass) {
-    document.querySelectorAll("." + classParent + " button").forEach(function(elem) {
+    document.querySelectorAll("." + classParent + " button:not(#exportMainExcel)").forEach(function(elem) {
         elem.classList.remove(nameClass);
     });
 
-    document.getElementById(id).classList.add(nameClass);
+    const button = document.getElementById(id);
+
+    if (button && button.id !== "exportMainExcel") {
+        button.classList.add(nameClass);
+    }
 }
 
 function openLPUStatistic(id) {
@@ -73,6 +90,8 @@ function openLPUStatistic(id) {
 
     updateStatisticContent();
 
+    // Обновляем скрытую вкладку сразу при смене ЛПУ,
+    // потому что при последующем переключении вкладок повторная загрузка не выполняется.
     if (typeStatistic == "lightStatictic")
         updateErrors();
     else
@@ -1254,10 +1273,10 @@ document.getElementById("cancelCustomDate")
         closeCustomDatePanel();
     });
 
-document.querySelectorAll(".sideNav .sideNavButton").forEach(function(elem) {
+document.querySelectorAll(".sideNav .sideNavButton:not(#exportMainExcel)").forEach(function(elem) {
     elem.addEventListener("click", function(event) {
         event.preventDefault();
-        openLPUStatistic(event.target.getAttribute("id"));
+        openLPUStatistic(event.currentTarget.getAttribute("id"));
     });
 });
 
@@ -1349,3 +1368,55 @@ window.addEventListener("beforeunload", function() {
     pageIsUnloading = true;
     abortAllDataRequests();
 });
+
+document.getElementById("exportMainExcel")
+    .addEventListener("click", function(event) {
+        event.preventDefault();
+
+        let start;
+        let end;
+
+        if (typeStatistic === "lightStatictic") {
+            start = startLight;
+            end = endLight;
+        } else {
+            start = startExtended;
+            end = endExtended;
+        }
+
+        if (!start || !end) {
+            showNotification("Не выбран период для выгрузки");
+            return;
+        }
+
+        const button = document.getElementById("exportMainExcel");
+
+        button.disabled = true;
+        button.textContent = "Формируется файл...";
+
+        showNotification("Выгрузка началась. Файл скоро начнет скачиваться");
+
+        const params = new URLSearchParams({
+            organization: idLpu || "",
+            organizationName: listLpuName[LPU] || "Главная",
+            start: start.toISOString(),
+            end: end.toISOString()
+        });
+
+        const url = `${globalUrl}/main/exportExcel?${params.toString()}`;
+
+        const iframe = document.createElement("iframe");
+        iframe.style.display = "none";
+        iframe.src = url;
+
+        document.body.appendChild(iframe);
+
+        setTimeout(() => {
+            button.disabled = false;
+            button.textContent = "Выгрузить Excel";
+
+            setTimeout(() => {
+                iframe.remove();
+            }, 60000);
+        }, 3000);
+    });

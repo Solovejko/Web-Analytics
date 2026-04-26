@@ -180,10 +180,9 @@ button {
    ========================= */
 
 .sideNav {
-    display: grid;
-    grid-auto-rows: 54px;
-    row-gap: 12px;
-    align-content: start;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
     min-height: 100vh;
     padding: 12px;
     box-sizing: border-box;
@@ -194,6 +193,11 @@ button {
 .sideNav .sideNavButton {
     display: grid;
     align-items: center;
+    justify-items: center;
+
+    min-height: 54px;
+    height: 54px;
+
     padding: 0 14px;
     font-size: 18px;
     text-align: center;
@@ -201,8 +205,12 @@ button {
     color: var(--text-main);
     border-radius: var(--radius-nav);
     box-shadow: var(--shadow-medium);
+    flex-shrink: 0;
 }
 
+.exportExcelButton {
+    margin-top: auto;
+}
 
 /* =========================
    ВЕРХНИЕ ПЕРЕКЛЮЧАТЕЛИ
